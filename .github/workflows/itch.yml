@@ -96,6 +96,7 @@ jobs:
           itch_user: saenai255
           itch_game: rpg-game
           version: ${{ github.ref_name }}
+          channel: web
           files: build/web
   export-mac:
     if: false
