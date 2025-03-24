@@ -78,6 +78,10 @@ jobs:
       - name: Retrieve Commit Hashes
         id: commit
         uses: prompt/actions-commit-hash@v3
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'  # Specify the desired Python version
       - name: Update Version
         run: python deployment/version.py "${{ steps.commit.outputs.short }}"  Web
       - name: Setup
