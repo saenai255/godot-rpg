@@ -1,10 +1,11 @@
-[gd_scene load_steps=93 format=3 uid="uid://bt242t2mqo16y"]
+[gd_scene load_steps=96 format=3 uid="uid://bt242t2mqo16y"]
 
 [ext_resource type="Texture2D" uid="uid://bkbiqs0dntriu" path="res://sprites/vampires/PNG/Vampires1/Attack/Vampires1_Attack_full.png" id="1_1txc5"]
 [ext_resource type="Texture2D" uid="uid://dp1hwjyjmwop7" path="res://sprites/vampires/PNG/Vampires1/Idle/Vampires1_Idle_full.png" id="1_72ieh"]
 [ext_resource type="Texture2D" uid="uid://t6tvmgp7cg4d" path="res://sprites/vampires/PNG/Vampires1/Walk/Vampires1_Walk_full.png" id="2_4dohe"]
 [ext_resource type="Texture2D" uid="uid://d3xqdbhgkuv1v" path="res://sprites/vampires/PNG/Vampires1/Run/Vampires1_Run_full.png" id="2_r66lb"]
 [ext_resource type="PackedScene" uid="uid://daxdqn2t0xytr" path="res://prefabs/keybinds_overlay.tscn" id="5_ht1c8"]
+[ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="6_g2jcq"]
 
 [sub_resource type="GDScript" id="GDScript_8kmhe"]
 resource_name = "vampire.gd"
@@ -37,6 +38,7 @@ func _ready() -> void:
 	PlayerState.inventory.store_item(Consts.ITEM_ROPE)
 	PlayerState.inventory.store_item(Consts.ITEM_STONE_SWORD)
 	print_debug(PlayerState.inventory)
+	print_debug(ProjectSettings.get_setting(\"application/config/version\"))
 
 func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed(\"toggle_inventory\"):
@@ -764,6 +766,19 @@ animations = [{
 "speed": 6.0
 }]
 
+[sub_resource type="LabelSettings" id="LabelSettings_u51tk"]
+font = ExtResource("6_g2jcq")
+font_size = 24
+shadow_size = 3
+shadow_color = Color(0, 0, 0, 0.866667)
+
+[sub_resource type="GDScript" id="GDScript_g2jcq"]
+script/source = "extends Label
+
+func _ready() -> void:
+	text = ProjectSettings.get_setting(\"application/config/version\", \"unset\")
+"
+
 [node name="Player" type="CharacterBody2D"]
 y_sort_enabled = true
 script = SubResource("GDScript_8kmhe")
@@ -789,3 +804,19 @@ offset_left = 17.0
 offset_top = 9.0
 offset_right = 17.0
 offset_bottom = 9.0
+
+[node name="Version" type="Label" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -87.0
+offset_top = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "version"
+label_settings = SubResource("LabelSettings_u51tk")
+horizontal_alignment = 2
+vertical_alignment = 2
+script = SubResource("GDScript_g2jcq")

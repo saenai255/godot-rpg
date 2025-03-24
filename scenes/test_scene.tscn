@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ckrjtrxxwqo6k"]
+[gd_scene load_steps=15 format=3 uid="uid://ckrjtrxxwqo6k"]
 
 [ext_resource type="PackedScene" uid="uid://bt242t2mqo16y" path="res://prefabs/player.tscn" id="1_g7g4h"]
 [ext_resource type="Texture2D" uid="uid://d3agkxcadf1os" path="res://icon.svg" id="2_j8ivh"]
@@ -67,12 +67,11 @@ animations = [{
 "loop": true,
 "name": &"default",
 "speed": 6.0
-}, {
-"frames": [],
-"loop": true,
-"name": &"new_animation",
-"speed": 5.0
 }]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7ddre"]
+radius = 11.0
+height = 24.0
 
 [node name="TestScene" type="Node2D"]
 y_sort_enabled = true
@@ -90,5 +89,10 @@ position = Vector2(-100, 42)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(-61, -17)
 sprite_frames = SubResource("SpriteFrames_ntc4i")
-animation = &"new_animation"
 autoplay = "default"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="AnimatedSprite2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite2D/StaticBody2D"]
+position = Vector2(-4, 16)
+shape = SubResource("CapsuleShape2D_7ddre")
