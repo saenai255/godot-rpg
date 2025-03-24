@@ -90,6 +90,13 @@ jobs:
         with:
           name: web
           path: build/web
+      - uses: Ayowel/butler-to-itch@v1
+        with:
+          butler_key: ${{ secrets.BUTLER_API_KEY }}
+          itch_user: saenai255
+          itch_game: rpg-game
+          version: ${{ github.ref_name }}
+          files: build/web
   export-mac:
     if: false
     name: Mac Export
