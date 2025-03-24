@@ -1,4 +1,3 @@
-extends RefCounted
 class_name Item
 
 enum ItemQuality {
@@ -17,13 +16,13 @@ var stack_size: int
 var texture: Texture2D
 var quality: ItemQuality
 
-func _init(id: int, name: String, quality: ItemQuality, description: String, stack_size: int, texture: Texture2D):
-	self.id = id
-	self.quality = quality
-	self.name = name
-	self.description = description
-	self.stack_size = stack_size
-	self.texture = texture if texture != null else load("res://icon.svg")
+func _init(_id: int, _name: String, _quality: ItemQuality, _description: String, _stack_size: int, _texture: Texture2D):
+	id = _id
+	quality = _quality
+	name = _name
+	description = _description
+	stack_size = _stack_size
+	texture = _texture if _texture != null else load("res://icon.svg")
 	
 func _to_string() -> String:
 	return "Item(id: %d, name: '%s', quality: %s, description: '%s', stack_size: %d)" % [id, name, quality, description, stack_size]

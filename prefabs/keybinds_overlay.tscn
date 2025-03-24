@@ -17,10 +17,10 @@ class Keybind:
 	func _to_string() -> String:
 		return \"Keybind(\" + name + \"=\" + key + \")\"
 	
-	static func make(name: String, key: String) -> Keybind:
+	static func make(_name: String, _key: String) -> Keybind:
 		var k := Keybind.new()
-		k.name = name
-		k.key = key
+		k.name = _name
+		k.key = _key
 		return k
 
 func get_keybinds() -> Array[Keybind]:

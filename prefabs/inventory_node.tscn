@@ -32,7 +32,7 @@ func render_slots() -> void:
 		)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed(\"move_right\"):
 		active_slot = (active_slot + 1) if active_slot + 1 < INVENTORY_SIZE else 0
 		set_slot_active(active_slot)
@@ -45,13 +45,13 @@ func _process(delta: float) -> void:
 		PlayerState.inventory.remove_item(active_slot)
 		%Tooltip.visible = false
 
-func set_slot_active(active_slot: int) -> void:
+func set_slot_active(active_slot_idx: int) -> void:
 	if %SlotGrid.get_child_count() == 0:
 		return
 	
 	for slot_idx in Inventory.INVENTORY_SIZE:
 		var slot := %SlotGrid.get_child(slot_idx)
-		slot.set_active(slot_idx == active_slot)
+		slot.set_active(slot_idx == active_slot_idx)
 	
 		if slot.active:
 			var data := PlayerState.inventory.item_slots[slot_idx]
@@ -106,7 +106,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 "
 

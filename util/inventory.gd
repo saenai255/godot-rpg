@@ -1,4 +1,3 @@
-extends RefCounted
 class_name Inventory
 
 const INVENTORY_SIZE := 16
@@ -7,9 +6,9 @@ class ItemQuantity:
 	var item: Item
 	var quantity: int
 	
-	func _init(item: Item, quantity: int):
-		self.item = item
-		self.quantity = quantity
+	func _init(_item: Item, _quantity: int):
+		self.item = _item
+		self.quantity = _quantity
 	
 	func _to_string() -> String:
 		return "ItemQuantity(item: {item}, quantity: {quantity})".format({
