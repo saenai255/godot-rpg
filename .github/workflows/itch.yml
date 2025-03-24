@@ -24,7 +24,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Install dependencies
-        run: snap install godot-4
+        run: sudo snap install godot-4
       - name: Build web
         run: godot --export-release Web ./builds/web
       - name: See files
