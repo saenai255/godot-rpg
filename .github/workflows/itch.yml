@@ -10,6 +10,7 @@ env:
 
 jobs:
   export-windows:
+    if: false
     name: Windows Export
     runs-on: ubuntu-22.04  # Use 22.04 with godot 4
     container:
@@ -38,6 +39,7 @@ jobs:
           path: build/windows
 
   export-linux:
+    if: false
     name: Linux Export
     runs-on: ubuntu-22.04  # Use 22.04 with godot 4
     container:
@@ -89,6 +91,7 @@ jobs:
           name: web
           path: build/web
   export-mac:
+    if: false
     name: Mac Export
     runs-on: ubuntu-22.04  # Use 22.04 with godot 4
     container:
