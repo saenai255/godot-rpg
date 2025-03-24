@@ -92,15 +92,15 @@ jobs:
           path: build/web
       - name: Files
         run: ls -lah build/web
+      - name: Zip Files
+        run: zip -r game-web.zip build/web
       - uses: Ayowel/butler-to-itch@v1
         with:
           butler_key: ${{ secrets.BUTLER_API_KEY }}
           itch_user: saenai255
           itch_game: rpg-game
           version: ${{ github.ref_name }}
-          channel: web
-          auto_channel: false
-          files: build/web
+          files: game-web.zip
   export-mac:
     if: false
     name: Mac Export
