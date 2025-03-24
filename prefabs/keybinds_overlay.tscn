@@ -1,0 +1,74 @@
+[gd_scene load_steps=4 format=3 uid="uid://daxdqn2t0xytr"]
+
+[ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="1_fkppj"]
+
+[sub_resource type="GDScript" id="GDScript_lumvt"]
+script/source = "extends Control
+
+func _ready() -> void:
+	$MarginContainer/MarginContainer/Text.text = \"Keybinds:\\n\"
+	$MarginContainer/MarginContainer/Text.text += get_keybinds().reduce(func(acc: String, it: Keybind) -> String:
+		return acc + \"\\n\" + it.name.replace(\"_\", \" \").capitalize() + \" = \" + it.key, \"\")
+
+class Keybind:
+	var name: String
+	var key: String
+	
+	func _to_string() -> String:
+		return \"Keybind(\" + name + \"=\" + key + \")\"
+	
+	static func make(name: String, key: String) -> Keybind:
+		var k := Keybind.new()
+		k.name = name
+		k.key = key
+		return k
+
+func get_keybinds() -> Array[Keybind]:
+	var out : Array[Keybind] = []
+	for action_name in InputMap.get_actions():
+		if action_name.begins_with(\"ui_\"):
+			continue
+		var actions := InputMap.action_get_events(action_name)
+		for action in actions:
+			if action is InputEventKey:
+				out.append(Keybind.make(action_name, action.as_text()))
+	
+	return out
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_fkppj"]
+font = ExtResource("1_fkppj")
+font_size = 24
+
+[node name="KeybindsOverlay" type="Control"]
+z_index = 100
+z_as_relative = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_lumvt")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 184.0
+offset_bottom = 291.0
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0, 0, 0, 0.145098)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Text" type="Label" parent="MarginContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "Some Text"
+label_settings = SubResource("LabelSettings_fkppj")

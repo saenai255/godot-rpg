@@ -1,0 +1,94 @@
+[gd_scene load_steps=14 format=3 uid="uid://ckrjtrxxwqo6k"]
+
+[ext_resource type="PackedScene" uid="uid://bt242t2mqo16y" path="res://prefabs/player.tscn" id="1_g7g4h"]
+[ext_resource type="Texture2D" uid="uid://d3agkxcadf1os" path="res://icon.svg" id="2_j8ivh"]
+[ext_resource type="PackedScene" uid="uid://dr7a2agu4rdtb" path="res://prefabs/terrains/test_terrain.tscn" id="3_nd71p"]
+[ext_resource type="Texture2D" uid="uid://dmfl3sjeds8ka" path="res://sprites/Idle.png" id="4_7ddre"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qjeyg"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3qnke"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wtsjf"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rnaij"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h3xc6"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s36qc"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6qxox"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gthg3"]
+atlas = ExtResource("4_7ddre")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ntc4i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qjeyg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3qnke")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wtsjf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rnaij")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h3xc6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s36qc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6qxox")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gthg3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
+
+[node name="TestScene" type="Node2D"]
+y_sort_enabled = true
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(-259, 41)
+texture = ExtResource("2_j8ivh")
+offset = Vector2(-1, 52)
+
+[node name="TestTerrain" parent="." instance=ExtResource("3_nd71p")]
+
+[node name="Player" parent="." instance=ExtResource("1_g7g4h")]
+position = Vector2(-100, 42)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-61, -17)
+sprite_frames = SubResource("SpriteFrames_ntc4i")
+animation = &"new_animation"
+autoplay = "default"
