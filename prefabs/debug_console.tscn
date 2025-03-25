@@ -11,6 +11,8 @@ var commands = {
 	\"speed\": cmd_speed,
 	\"item\": cmd_item,
 	\"collision\": cmd_collision,
+	\"exp\": cmd_experience,
+	\"level\": cmd_level,
 	\"help\": cmd_help,
 }
 
@@ -198,6 +200,62 @@ func cmd_help(_parts: Array[String]) -> bool:
 		print_info(\"- \" + cmd)
 	return true
 	
+
+func cmd_experience(parts: Array[String]) -> bool:
+	var subcmd := get_or(parts, 0, \"help\")
+	var str_value := get_or(parts, 1, \"\")
+	
+	if subcmd == \"get\":
+		print_info(\"experience: %d / %d\" % [PlayerState.experience, PlayerState.experience_to_level[PlayerState.level]])
+	elif subcmd == \"set\":
+		if !str_value.is_valid_int():
+			return false
+		var value := str_value.to_int()
+		PlayerState.set_experience(value)
+		cmd_experience([\"get\"])
+	elif subcmd == \"add\":
+		if !str_value.is_valid_int():
+			return false
+		var value := str_value.to_int()
+		PlayerState.add_exp(value)
+		cmd_experience([\"get\"])
+	elif subcmd == \"help\":
+		print_info(\"available subcommands:\")
+		print_info(\"- get\")
+		print_info(\"- set [amount]\")
+		print_info(\"- add [amount]\")
+		print_info(\"- help\")
+	else:
+		return false
+	return true
+
+func cmd_level(parts: Array[String]) -> bool:
+	var subcmd := get_or(parts, 0, \"help\")
+	var str_value := get_or(parts, 1, \"\")
+	
+	if subcmd == \"get\":
+		print_info(\"level: %d / %d\" % [PlayerState.level, PlayerState.MAX_LEVEL])
+	elif subcmd == \"set\":
+		if !str_value.is_valid_int():
+			return false
+		var value := str_value.to_int()
+		PlayerState.set_level(value)
+		cmd_level([\"get\"])
+	elif subcmd == \"add\":
+		if !str_value.is_valid_int():
+			return false
+		var value := str_value.to_int()
+		PlayerState.set_level(PlayerState.level + value)
+		cmd_level([\"get\"])
+	elif subcmd == \"help\":
+		print_info(\"available subcommands:\")
+		print_info(\"- get\")
+		print_info(\"- set [amount]\")
+		print_info(\"- add [amount]\")
+		print_info(\"- help\")
+	else:
+		return false
+	return true
 "
 
 [node name="DebugConsole" type="MarginContainer"]
