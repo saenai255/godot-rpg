@@ -95,6 +95,7 @@ size_flags_vertical = 1
 text = "Item Name"
 label_settings = SubResource("LabelSettings_j7qfc")
 vertical_alignment = 2
+autowrap_mode = 3
 
 [node name="Quality" type="Label" parent="Tooltip/VBoxContainer/MarginContainer3/VBoxContainer"]
 unique_name_in_owner = true

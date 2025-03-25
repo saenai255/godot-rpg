@@ -66,6 +66,15 @@ var ITEM_STONE_SWORD := Item.new(
 	preload("res://sprites/stone_sword_transparent_32x32.png"),
 )
 
+var ITEM_THUNDERFURY := Item.new(
+	6,
+	"Thunderfury, Blessed Blade of the Windseeker",
+	Item.ItemQuality.Legendary,
+	"Probably a copyright infringement.",
+	UNSTACKABLE,
+	preload("res://sprites/stone_sword_transparent_32x32.png")
+)
+
 
 var items : Array[Item] = [
 	ITEM_ROPE,
@@ -73,4 +82,5 @@ var items : Array[Item] = [
 	ITEM_PLANT_FIBER,
 	ITEM_ROUGH_STONE,
 	ITEM_STONE_SWORD,
+	ITEM_THUNDERFURY,
 ]
