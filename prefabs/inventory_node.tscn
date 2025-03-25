@@ -1,7 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://db1vdxvi12c80"]
+[gd_scene load_steps=6 format=3 uid="uid://db1vdxvi12c80"]
 
-[ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="1_qlmxe"]
-[ext_resource type="FontFile" uid="uid://dhgnmjhvybfng" path="res://fonts/Arial Narrow/arialnarrow.ttf" id="2_j7qfc"]
+[ext_resource type="PackedScene" uid="uid://dg7ydggu8uw0c" path="res://prefabs/item_tooltip.tscn" id="1_qlmxe"]
 
 [sub_resource type="GDScript" id="GDScript_2yeg7"]
 script/source = "extends CanvasLayer
@@ -43,7 +42,7 @@ func _process(_delta: float) -> void:
 	
 	if Input.is_key_pressed(KEY_D):
 		PlayerState.inventory.remove_item(active_slot)
-		%Tooltip.visible = false
+		%ItemTooltip.set_item(null)
 
 func set_slot_active(active_slot_idx: int) -> void:
 	if %SlotGrid.get_child_count() == 0:
@@ -56,44 +55,32 @@ func set_slot_active(active_slot_idx: int) -> void:
 		if slot.active:
 			var data := PlayerState.inventory.item_slots[slot_idx]
 			if data == null:
-				%Tooltip.visible = false
+				%ItemTooltip.set_item(null)
 			else:
-				var prefix := (\"%dx \" % [data.quantity]) if data.quantity > 1 else \"\"
-				%ItemName.text = prefix + data.item.name
-				#%ItemName.label_settings.color = get_quality_color(data.item.quality)
-				%Description.text = data.item.description
-				%Tooltip.visible = true
-		
-func get_quality_color(quality: Item.ItemQuality) -> Color:
-		if quality == Item.ItemQuality.Junk:
-			return Color.DIM_GRAY
-		elif quality == Item.ItemQuality.Common:
-			return Color.WHITE_SMOKE			
-		elif quality == Item.ItemQuality.Uncommon:
-			return Color.LIME_GREEN
-		elif quality == Item.ItemQuality.Rare:
-			return Color.ROYAL_BLUE
-		elif quality == Item.ItemQuality.Epic:
-			return Color.DARK_ORCHID
-		elif quality == Item.ItemQuality.Legendary:
-			return Color.DARK_ORANGE
-		return Color.BLACK
-		
+				%ItemTooltip.set_item(data)		
 "
 
-[sub_resource type="LabelSettings" id="LabelSettings_j7qfc"]
-font = ExtResource("1_qlmxe")
-font_size = 24
-font_color = Color(0.184314, 1, 0.168627, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_2yeg7"]
-font = ExtResource("2_j7qfc")
-font_size = 18
-font_color = Color(1, 1, 0.376471, 1)
-
 [sub_resource type="LabelSettings" id="LabelSettings_qlmxe"]
-font = ExtResource("2_j7qfc")
-font_color = Color(0, 0.768627, 1, 1)
+
+[sub_resource type="GDScript" id="GDScript_j7qfc"]
+script/source = "extends Label
+
+const MULT = 1000
+
+func _ready() -> void:
+	set_currency(PlayerState.currency)
+	PlayerState.currency_changed.connect(set_currency)
+	
+func set_currency(value: int) -> void:
+	var gold := floori(value / MULT / MULT)
+	var silver := floori(value / MULT) % MULT
+	var copper := value % MULT
+	text = \"{gold}g {silver}s {copper}c\".format({
+		\"gold\": gold,
+		\"silver\": silver,
+		\"copper\": copper
+	})
+"
 
 [sub_resource type="GDScript" id="GDScript_qlmxe"]
 script/source = "extends Button
@@ -138,81 +125,33 @@ theme_override_constants/margin_bottom = 20
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 alignment = 1
 
-[node name="SlotGrid" type="GridContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SlotGrid" type="GridContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 150)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 columns = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 3
-theme_override_constants/margin_right = 3
-theme_override_constants/margin_bottom = 3
 
-[node name="Tooltip" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer"]
+[node name="Currency" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 50)
 layout_mode = 2
-
-[node name="ColorRect" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip"]
-visible = false
-layout_mode = 2
-color = Color(0.219608, 0.219608, 0.219608, 0.784314)
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip"]
-layout_mode = 2
-
-[node name="MarginContainer3" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 15
-theme_override_constants/margin_right = 5
-
-[node name="ItemName" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip/VBoxContainer/MarginContainer3"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 35)
-layout_mode = 2
-size_flags_vertical = 1
-text = "Item Name"
-label_settings = SubResource("LabelSettings_j7qfc")
-
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 5
-
-[node name="Description" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip/VBoxContainer/MarginContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_vertical = 1
-text = "Some short item description goes here."
-label_settings = SubResource("LabelSettings_2yeg7")
-autowrap_mode = 3
-
-[node name="MarginContainer2" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 5
-
-[node name="Description2" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/MarginContainer/Tooltip/VBoxContainer/MarginContainer2"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-text = "Options:
-  (D)elete Item"
 label_settings = SubResource("LabelSettings_qlmxe")
-autowrap_mode = 3
+script = SubResource("GDScript_j7qfc")
+
+[node name="ItemTooltip" parent="CenterContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_qlmxe")]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="DebugAddPlantFiber" type="Button" parent="."]
 offset_left = 861.0

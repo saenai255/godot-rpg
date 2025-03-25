@@ -1,0 +1,93 @@
+[gd_scene load_steps=2 format=3 uid="uid://ibxipxoa7qw6"]
+
+[sub_resource type="GDScript" id="GDScript_u51tk"]
+script/source = "extends MarginContainer
+
+func _ready() -> void:
+	%Command.text_submitted.connect(handle_command)
+
+func handle_command(command: String) -> void:
+	print_cmd(command)
+	%Command.clear()
+	%Command.call_deferred(\"grab_focus\")
+	%Command.focus_mode = FOCUS_ALL
+	
+	var parts := command.split(\" \")
+	if len(parts) == 0:
+		print_info('err: invalid command')
+		return
+
+	var ok := false
+	if parts[0] == 'add':
+		if len(parts) > 1 and parts[1] == 'currency':
+			if len(parts) > 2 and parts[2].is_valid_int():
+				var value := parts[2].to_int()
+				PlayerState.set_currency(PlayerState.currency + value)
+				print_info('currency changed')
+				ok = true
+		if len(parts) > 1 and parts[1] == 'item':
+			if len(parts) > 2 and parts[2].is_valid_int():
+				ok = true
+				var item_id := parts[2].to_int()
+				var quantity := parts[3].to_int() if len(parts) > 3 and parts[3].is_valid_int() else 1
+				var item_idx := Consts.items.find_custom(func(it: Item) -> bool:
+					return it.id == item_id
+				)
+				if item_idx != -1:
+					var item := Consts.items[item_idx]
+					PlayerState.inventory.store_item_quantity(item, quantity)
+					print_info('added item [%s] x%d' % [item.name, quantity])
+				else:
+					print_info('err: item not found')
+	elif parts[0] == 'help':
+		ok = true
+		print_info('available commands:')
+		print_info('')
+		print_info(' - help')
+		print_info(' - add currency [copper]')
+		print_info(' - add item [id] [quantity=1]')
+		
+	
+	if !ok:
+		print_info('err: invalid command. see commands using \"help\" command')
+
+func print_cmd(cmd: String) -> void:
+	%History.text += \"\\n > \"
+	%History.text += cmd
+	%History.scroll_vertical = %History.get_v_scroll_bar().max_value
+func print_info(text: String) -> void:
+	%History.text += \"\\n    \" + text
+	%History.scroll_vertical = %History.get_v_scroll_bar().max_value
+"
+
+[node name="DebugConsole" type="MarginContainer"]
+anchors_preset = -1
+anchor_left = 0.266
+anchor_right = 0.756
+anchor_bottom = 0.556
+offset_left = -0.720001
+offset_top = 5.0
+offset_right = -0.52002
+offset_bottom = -0.480042
+script = SubResource("GDScript_u51tk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="History" type="TextEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Command history will be here"
+context_menu_enabled = false
+shortcut_keys_enabled = false
+selecting_enabled = false
+virtual_keyboard_enabled = false
+middle_mouse_paste_enabled = false
+empty_selection_clipboard_enabled = false
+
+[node name="Command" type="LineEdit" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+placeholder_text = "Type a command here or \"help\""

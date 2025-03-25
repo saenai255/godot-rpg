@@ -14,6 +14,7 @@ script/source = "extends CharacterBody2D
 class_name Player
 
 const InventoryPrefab := preload(\"res://prefabs/inventory_node.tscn\")
+const DebugConsolePrefab := preload(\"res://prefabs/debug_console.tscn\")
 
 const SPEED := 100.0
 const RUN_SPEED_MULTIPLIER := 1.7
@@ -29,6 +30,7 @@ var is_running := false
 var is_inventory_open := false
 
 var inventory: CanvasLayer = null
+var debug_console : Control = null
 
 func _ready() -> void:
 	$AnimatedSprite2D.play(\"idle_front\")
@@ -37,10 +39,18 @@ func _ready() -> void:
 	PlayerState.inventory.store_item_quantity(Consts.ITEM_WOOD_LOG, 10)
 	PlayerState.inventory.store_item(Consts.ITEM_ROPE)
 	PlayerState.inventory.store_item(Consts.ITEM_STONE_SWORD)
-	print_debug(PlayerState.inventory)
-	print_debug(ProjectSettings.get_setting(\"application/config/version\"))
+	PlayerState.set_currency(123456789)
 
 func _physics_process(_delta: float) -> void:
+	if Input.is_action_just_pressed(\"toggle_console\"):
+		if debug_console == null:
+			debug_console = DebugConsolePrefab.instantiate()
+			$CanvasLayer.add_child(debug_console)
+		else:
+			debug_console.queue_free()
+	if debug_console != null:
+		return
+	
 	if Input.is_action_just_pressed(\"toggle_inventory\"):
 		is_inventory_open = !is_inventory_open
 		
