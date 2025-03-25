@@ -16,7 +16,7 @@ class_name Player
 const InventoryPrefab := preload(\"res://prefabs/inventory_node.tscn\")
 const DebugConsolePrefab := preload(\"res://prefabs/debug_console.tscn\")
 
-const SPEED := 100.0
+var SPEED := 100.0
 const RUN_SPEED_MULTIPLIER := 1.7
 
 enum Direction { Left, Right, Up, Down }
@@ -34,6 +34,7 @@ var debug_console : Control = null
 
 func _ready() -> void:
 	$AnimatedSprite2D.play(\"idle_front\")
+	PlayerState.player_instance = self
 	PlayerState.inventory.store_item_quantity(Consts.ITEM_PLANT_FIBER, 15)
 	PlayerState.inventory.store_item_quantity(Consts.ITEM_ROUGH_STONE, 15)
 	PlayerState.inventory.store_item_quantity(Consts.ITEM_WOOD_LOG, 10)
@@ -47,8 +48,8 @@ func _physics_process(_delta: float) -> void:
 			debug_console = DebugConsolePrefab.instantiate()
 			$CanvasLayer.add_child(debug_console)
 		else:
-			debug_console.queue_free()
-	if debug_console != null:
+			debug_console.toggle()
+	if debug_console != null and debug_console.visible:
 		return
 	
 	if Input.is_action_just_pressed(\"toggle_inventory\"):

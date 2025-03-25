@@ -1,11 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://ibxipxoa7qw6"]
+[gd_scene load_steps=3 format=3 uid="uid://ibxipxoa7qw6"]
+
+[ext_resource type="FontFile" uid="uid://dhgnmjhvybfng" path="res://fonts/Arial Narrow/arialnarrow.ttf" id="1_tx8se"]
 
 [sub_resource type="GDScript" id="GDScript_u51tk"]
 script/source = "extends MarginContainer
 
 func _ready() -> void:
 	%Command.text_submitted.connect(handle_command)
+	%Command.grab_focus()
 
+func toggle() -> void:
+	visible = !visible
+	if visible:
+		%Command.clear()
+		%Command.grab_focus()
+	
 func handle_command(command: String) -> void:
 	print_cmd(command)
 	%Command.clear()
@@ -39,6 +48,25 @@ func handle_command(command: String) -> void:
 					print_info('added item [%s] x%d' % [item.name, quantity])
 				else:
 					print_info('err: item not found')
+	elif parts[0] == 'show':
+		if len(parts) > 1 and parts[1] == \"position\":
+			ok = true			
+			print_info(\"X: %f\" % [PlayerState.player_instance.global_position.x])
+			print_info(\"Y: %f\" % [PlayerState.player_instance.global_position.y])
+	elif parts[0] == 'set':
+		if len(parts) > 1 and parts[1] == 'speed':
+			var last_speed = PlayerState.player_instance.SPEED
+			var speed := parts[2].to_int() if len(parts) > 2 and parts[2].is_valid_int() else 100
+			PlayerState.player_instance.SPEED = speed
+			ok = true
+			print_info('player speed set from %d to %d' % [last_speed, speed])
+	elif parts[0] == 'toggle':
+		if len(parts) > 1 and parts[1] == 'collision':
+			var col_shape: CollisionShape2D = PlayerState.player_instance.get_child(0)
+			col_shape.disabled = !col_shape.disabled
+			print_info('collisions set to ' + str(!col_shape.disabled))
+			ok = true
+			
 	elif parts[0] == 'help':
 		ok = true
 		print_info('available commands:')
@@ -46,13 +74,17 @@ func handle_command(command: String) -> void:
 		print_info(' - help')
 		print_info(' - add currency [copper]')
 		print_info(' - add item [id] [quantity=1]')
+		print_info(' - show position')
+		print_info(' - set speed [speed=100]')
+		print_info(' - toggle collision')
 		
 	
 	if !ok:
 		print_info('err: invalid command. see commands using \"help\" command')
 
 func print_cmd(cmd: String) -> void:
-	%History.text += \"\\n > \"
+	var now := Time.get_datetime_string_from_system()
+	%History.text += \"\\n\" + now + \" > \"
 	%History.text += cmd
 	%History.scroll_vertical = %History.get_v_scroll_bar().max_value
 func print_info(text: String) -> void:
@@ -78,6 +110,8 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("1_tx8se")
+theme_override_font_sizes/font_size = 20
 placeholder_text = "Command history will be here"
 context_menu_enabled = false
 shortcut_keys_enabled = false
@@ -88,6 +122,9 @@ empty_selection_clipboard_enabled = false
 
 [node name="Command" type="LineEdit" parent="VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 25)
+custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("1_tx8se")
 placeholder_text = "Type a command here or \"help\""
+keep_editing_on_text_submit = true
+clear_button_enabled = true

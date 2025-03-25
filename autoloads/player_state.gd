@@ -7,3 +7,5 @@ signal currency_changed(int)
 func set_currency(value: int) -> void:
 	currency = value
 	currency_changed.emit(value)
+
+var player_instance : CharacterBody2D = null
