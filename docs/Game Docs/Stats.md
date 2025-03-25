@@ -1,6 +1,14 @@
 ## Minor Stats
+### Health
+Increases player health.
+```python
+health = 90 + value + level * 10
+```
 ### Physical Power
 Increases base physical damage. Skills use it in their damage formula.
+```python
+damage = random(weapon_min, weapon_max) + value
+```
 ### Magic Power
 Increases magic damage and healing. Skills use it in their damage and healing formula.
 ### Physical Armor
@@ -59,8 +67,7 @@ multiplier = (50 + value / 10 + level * 2) / 100
 # level 10, crit power 150 => 85%
 ```
 ## Major Stats
-### Strength
-Increases attack power and armor. 
+### Strength 
 ```python
 1 strength = 2 physical power + 2 armor
 ```
@@ -70,5 +77,9 @@ Increases attack power and armor.
 ```
 ### Dexterity
 ```python
-1 dexterity = 1 phyisical power + 1 dodge + 1 crit + 1 crit power 
+1 dexterity = 1 physical power + 1 dodge + 1 crit + 1 crit power 
+```
+### Stamina
+```python
+1 stamina = 10 health
 ```
