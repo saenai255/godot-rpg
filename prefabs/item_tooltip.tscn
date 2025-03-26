@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dg7ydggu8uw0c"]
+[gd_scene load_steps=11 format=3 uid="uid://dg7ydggu8uw0c"]
 
 [ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="1_6rs50"]
 [ext_resource type="FontFile" uid="uid://dhgnmjhvybfng" path="res://fonts/Arial Narrow/arialnarrow.ttf" id="2_ymi3x"]
@@ -19,7 +19,68 @@ func set_item(data: Inventory.ItemQuantity) -> void:
 	%Description.text = data.item.description
 	set_major_stats(data.item)
 	set_minor_stats(data.item)
+	set_equipment_type(data.item)
+	set_weapon_type(data.item)
+	set_weapon_damage(data.item)
 	%Tooltip.visible = true
+
+func set_weapon_damage(item: Item) -> void:
+	%WeaponDamageContainer.visible = item.damage != null
+	if !%WeaponDamageContainer.visible:
+		return
+	%Damage.text = \"    %d to %d damage\" % [item.damage.min, item.damage.max]
+	%DamageType.text = \"Physical\" if item.damage.type == Item.DamageType.Physical else \"Magical\"
+
+func set_weapon_type(item: Item) -> void:
+	%WeaponType.visible = item.weapon_slot != Item.WeaponSlot.None
+	if !%WeaponType.visible:
+		return
+	
+	var text := \"\"
+	if item.weapon_slot == Item.WeaponSlot.OneHand:
+		text = \"One Handed\"
+	elif item.weapon_slot == Item.WeaponSlot.OffHand:
+		text = \"Off Handed\"
+	elif item.weapon_slot == Item.WeaponSlot.MainHand:
+		text = \"Main Handed\"
+	elif item.weapon_slot == Item.WeaponSlot.TwoHand:
+		text = \"Two Handed\"
+	else:
+		push_error(\"unhandled weapon slot: \" + str(item.weapon_slot))
+	%WeaponType.text = text
+	
+func set_equipment_type(item: Item) -> void:
+	%EquipmentContainer.visible = true
+	
+	if item.slot == Item.EquipmentSlot.None:
+		%EquipmentContainer.visible = false
+		return
+	
+	var text := \"\"
+	if item.slot == Item.EquipmentSlot.Head:
+		text = \"Head\"
+	elif item.slot == Item.EquipmentSlot.Chest:
+		text = \"Chest\"
+	elif item.slot == Item.EquipmentSlot.Shoulders:
+		text = \"Shoulders\"
+	elif item.slot == Item.EquipmentSlot.Legs:
+		text = \"Legs\"
+	elif item.slot == Item.EquipmentSlot.Feet:
+		text = \"Feet\"
+	elif item.slot == Item.EquipmentSlot.Hands:
+		text = \"Hands\"
+	elif item.slot == Item.EquipmentSlot.Neck:
+		text = \"Neck\"
+	elif item.slot == Item.EquipmentSlot.Finger:
+		text = \"Finger\"
+	elif item.slot == Item.EquipmentSlot.Ear:
+		text = \"Ear\"
+	elif item.slot == Item.EquipmentSlot.Weapon:
+		text = \"Weapon\"
+	else:
+		push_error(\"unhandled equipment slot: \" + str(item.slot))
+	
+	%EquipmentType.text = text
 
 func set_major_stats(item: Item) -> void:
 	var text := \"\"
@@ -97,6 +158,10 @@ font_color = Color(0.184314, 1, 0.168627, 1)
 font = ExtResource("2_ymi3x")
 font_size = 18
 
+[sub_resource type="LabelSettings" id="LabelSettings_dhthj"]
+font = ExtResource("2_ymi3x")
+font_size = 18
+
 [sub_resource type="LabelSettings" id="LabelSettings_njdqu"]
 font = ExtResource("2_ymi3x")
 font_size = 18
@@ -131,6 +196,7 @@ color = Color(0.219608, 0.219608, 0.219608, 0.784314)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Tooltip"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="MarginContainer3" type="MarginContainer" parent="Tooltip/VBoxContainer"]
 layout_mode = 2
@@ -159,6 +225,63 @@ layout_mode = 2
 size_flags_vertical = 1
 text = "Uncommon"
 label_settings = SubResource("LabelSettings_6rs50")
+
+[node name="EquipmentContainer" type="MarginContainer" parent="Tooltip/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Tooltip/VBoxContainer/EquipmentContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tooltip/VBoxContainer/EquipmentContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EquipmentType" type="Label" parent="Tooltip/VBoxContainer/EquipmentContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Weapon"
+label_settings = SubResource("LabelSettings_ymi3x")
+autowrap_mode = 3
+
+[node name="WeaponType" type="Label" parent="Tooltip/VBoxContainer/EquipmentContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "One Handed"
+label_settings = SubResource("LabelSettings_dhthj")
+horizontal_alignment = 2
+autowrap_mode = 3
+
+[node name="WeaponDamageContainer" type="HBoxContainer" parent="Tooltip/VBoxContainer/EquipmentContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Damage" type="Label" parent="Tooltip/VBoxContainer/EquipmentContainer/VBoxContainer/WeaponDamageContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "    100 to 200 damage"
+label_settings = SubResource("LabelSettings_ymi3x")
+autowrap_mode = 3
+
+[node name="DamageType" type="Label" parent="Tooltip/VBoxContainer/EquipmentContainer/VBoxContainer/WeaponDamageContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Physical"
+label_settings = SubResource("LabelSettings_dhthj")
+horizontal_alignment = 2
+autowrap_mode = 3
 
 [node name="MajorStatsContainer" type="MarginContainer" parent="Tooltip/VBoxContainer"]
 unique_name_in_owner = true
