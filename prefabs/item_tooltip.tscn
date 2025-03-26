@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dg7ydggu8uw0c"]
+[gd_scene load_steps=10 format=3 uid="uid://dg7ydggu8uw0c"]
 
 [ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="1_6rs50"]
 [ext_resource type="FontFile" uid="uid://dhgnmjhvybfng" path="res://fonts/Arial Narrow/arialnarrow.ttf" id="2_ymi3x"]
@@ -17,8 +17,54 @@ func set_item(data: Inventory.ItemQuantity) -> void:
 	%Quality.label_settings.font_color = get_quality_color(data.item.quality)
 	%Quality.text = Item.ItemQuality.keys()[data.item.quality]
 	%Description.text = data.item.description
+	set_major_stats(data.item)
+	set_minor_stats(data.item)
 	%Tooltip.visible = true
 
+func set_major_stats(item: Item) -> void:
+	var text := \"\"
+	
+	print_debug(item.stats)
+	
+	if item.stats.stamina > 0:
+		text += '+%d Stamina\\n' % [item.stats.stamina]
+	if item.stats.strength > 0:
+		text += '+%d Strength\\n' % [item.stats.strength]
+	if item.stats.dexterity > 0:
+		text += '+%d Dexterity\\n' % [item.stats.dexterity]
+	if item.stats.intellect > 0:
+		text += '+%d Intellect\\n' % [item.stats.intellect]
+	
+	if text.ends_with(\"\\n\"):
+		text = text.trim_suffix(\"\\n\")
+	
+	%MajorStats.text = text
+	%MajorStatsContainer.visible = text != \"\"
+	
+func make_minor_stat_str(value: int, stat: String) -> String:
+	if value <= 0:
+		return \"\"
+	
+	return \"Increases %s by %d.\\n\" % [stat, value]
+
+func set_minor_stats(item: Item) -> void:
+	var text := \"\"
+	
+	text += make_minor_stat_str(item.stats.critical_power, \"critical power\")
+	text += make_minor_stat_str(item.stats.critical_rating, \"critical rating\")
+	text += make_minor_stat_str(item.stats.dodge_rating, \"dodge rating\")
+	text += make_minor_stat_str(item.stats.health, \"health\")
+	text += make_minor_stat_str(item.stats.magic_armor, \"magic armor\")
+	text += make_minor_stat_str(item.stats.physical_armor, \"physical armor\")
+	text += make_minor_stat_str(item.stats.magic_power, \"magic power\")
+	text += make_minor_stat_str(item.stats.physical_power, \"physical power\")
+	text += make_minor_stat_str(item.stats.mana, \"mana\")
+	
+	if text.ends_with(\"\\n\"):
+		text = text.trim_suffix(\"\\n\")
+	
+	%MinorStats.text = text
+	%MinorStatsContainer.visible = text != \"\"
 
 func get_quality_color(quality: Item.ItemQuality) -> Color:
 		if quality == Item.ItemQuality.Junk:
@@ -46,6 +92,15 @@ font_color = Color(0.184314, 1, 0.168627, 1)
 font = ExtResource("1_6rs50")
 font_size = 18
 font_color = Color(0.184314, 1, 0.168627, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ymi3x"]
+font = ExtResource("2_ymi3x")
+font_size = 18
+
+[sub_resource type="LabelSettings" id="LabelSettings_njdqu"]
+font = ExtResource("2_ymi3x")
+font_size = 18
+font_color = Color(0.270588, 1, 0.321569, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_2yeg7"]
 font = ExtResource("2_ymi3x")
@@ -81,7 +136,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 15
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Tooltip/VBoxContainer/MarginContainer3"]
@@ -105,11 +160,47 @@ size_flags_vertical = 1
 text = "Uncommon"
 label_settings = SubResource("LabelSettings_6rs50")
 
+[node name="MajorStatsContainer" type="MarginContainer" parent="Tooltip/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
+
+[node name="MajorStats" type="Label" parent="Tooltip/VBoxContainer/MajorStatsContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "+10 Strength
++5 Stamina"
+label_settings = SubResource("LabelSettings_ymi3x")
+autowrap_mode = 3
+
+[node name="MinorStatsContainer" type="MarginContainer" parent="Tooltip/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+
+[node name="MinorStats" type="Label" parent="Tooltip/VBoxContainer/MinorStatsContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Increases physical power by 10.
+Increases dodge rating by 5."
+label_settings = SubResource("LabelSettings_njdqu")
+autowrap_mode = 3
+
 [node name="MarginContainer" type="MarginContainer" parent="Tooltip/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 20
+theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 5
 
 [node name="Description" type="Label" parent="Tooltip/VBoxContainer/MarginContainer"]

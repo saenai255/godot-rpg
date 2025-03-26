@@ -1,8 +1,11 @@
 ## Minor Stats
 ### Health
-Increases player health.
 ```python
 health = 90 + value + level * 10
+```
+### Mana
+```python
+mana = 90 + value + level * 10
 ```
 ### Physical Power
 Increases base physical damage. Skills use it in their damage formula.

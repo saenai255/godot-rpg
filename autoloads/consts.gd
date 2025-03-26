@@ -64,6 +64,11 @@ var ITEM_STONE_SWORD := Item.new(
 	"Heavy and not very sharp. Probably not the best type of sword.",
 	UNSTACKABLE,
 	preload("res://sprites/stone_sword_transparent_32x32.png"),
+	Stats.from([
+		Stats.StatValue.new(Stats.Stat.Strength, 3),
+		Stats.StatValue.new(Stats.Stat.PhysicalPower, 5),
+		Stats.StatValue.new(Stats.Stat.CriticalPower, 10),
+	])
 )
 
 var ITEM_THUNDERFURY := Item.new(
@@ -72,7 +77,17 @@ var ITEM_THUNDERFURY := Item.new(
 	Item.ItemQuality.Legendary,
 	"Probably a copyright infringement.",
 	UNSTACKABLE,
-	preload("res://sprites/stone_sword_transparent_32x32.png")
+	preload("res://sprites/stone_sword_transparent_32x32.png"),
+	Stats.from([
+		Stats.StatValue.new(Stats.Stat.Strength, 33),
+		Stats.StatValue.new(Stats.Stat.Stamina, 27),
+		Stats.StatValue.new(Stats.Stat.Intellect, 15),
+		Stats.StatValue.new(Stats.Stat.Dexterity, 17),
+		Stats.StatValue.new(Stats.Stat.CriticalRating, 43),
+		Stats.StatValue.new(Stats.Stat.CriticalPower, 152),
+		Stats.StatValue.new(Stats.Stat.DodgeRating, 72),
+		Stats.StatValue.new(Stats.Stat.MagicArmor, 52),
+	])
 )
 
 
