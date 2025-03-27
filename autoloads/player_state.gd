@@ -1,6 +1,7 @@
 extends Node
 
 var inventory := Inventory.new()
+var equipped_items := EquippedItems.new()
 
 var currency := 0
 signal currency_changed(value: int)

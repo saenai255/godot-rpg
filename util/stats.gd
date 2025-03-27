@@ -114,3 +114,14 @@ static func from(values: Array[StatValue]) -> Stats:
 			push_error('unhandled type: ' + str(t))
 	
 	return out
+
+func get_phys_damage_reduction(level: int) -> float:
+	return (5.0 + float(physical_armor) / 20.0 + float(level) / 3.0) / 100.0
+func get_magic_damage_reduction(level: int) -> float:
+	return (5.0 + float(magic_armor) / 20.0 + float(level) / 3.0) / 100.0
+func get_dodge_chance(level: int) -> float:
+	return (5.0 + float(dodge_rating) / 20.0 + float(level) / 3.0) / 100.0
+func get_crit_chance(level: int) -> float:
+	return (5.0 + float(critical_rating) / 20.0 + float(level) / 3.0) / 100.0
+func get_crit_multiplier(level: int) -> float:
+	return (50.0 + float(critical_power) / 10.0 + float(level) * 2.0) / 100.0 

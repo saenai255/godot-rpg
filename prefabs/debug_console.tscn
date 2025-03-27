@@ -13,6 +13,7 @@ var commands = {
 	\"collision\": cmd_collision,
 	\"exp\": cmd_experience,
 	\"level\": cmd_level,
+	\"stats\": cmd_stats,
 	\"help\": cmd_help,
 }
 
@@ -114,11 +115,22 @@ func cmd_item(parts: Array[String]) -> bool:
 					found = false
 			if found:
 				print_info(\"%s [%s]\" % [str(item.id).rpad(10), item.name])
-			
+	elif subcmd == \"equipped\":
+		print_info(\"equipped items:\")
+		print_info(\"SLOT %s ITEM_ID %s ITEM_NAME\" % [\"\".lpad(8), \"\".lpad(6)])
+		for slot in EquippedItems.EquippedItemSlot.keys():
+			var item: Item = PlayerState.equipped_items.items.get(EquippedItems.EquippedItemSlot[slot], null)
+			var name := \"<empty slot>\"
+			var id := \"-\"
+			if item != null:
+				name = item.name
+				id = str(item.id)
+			print_info(\"%s %s [%s]\" % [slot.rpad(15), id.rpad(10), name])
 	elif subcmd == \"help\":
 		print_info(\"available subcommands:\")
 		print_info(\"- add [item_id] [quantity=1]\")
 		print_info(\"- search [terms...]\")
+		print_info(\"- equipped\")
 		print_info(\"- help\")
 	else:
 		return false
@@ -224,6 +236,19 @@ func cmd_experience(parts: Array[String]) -> bool:
 		print_info(\"- get\")
 		print_info(\"- set [amount]\")
 		print_info(\"- add [amount]\")
+		print_info(\"- help\")
+	else:
+		return false
+	return true
+	
+func cmd_stats(parts: Array[String]) -> bool:
+	var subcmd := get_or(parts, 0, \"help\")
+	
+	if subcmd == \"get\":
+		print_info(\"computed stats: %s\" % [PlayerState.equipped_items.computed_stats_to_string()])
+	elif subcmd == \"help\":
+		print_info(\"available subcommands:\")
+		print_info(\"- get\")
 		print_info(\"- help\")
 	else:
 		return false

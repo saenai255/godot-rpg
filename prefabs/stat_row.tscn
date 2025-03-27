@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://gb7gkermx4g5"]
+
+[sub_resource type="GDScript" id="GDScript_kymoi"]
+script/source = "extends HBoxContainer
+
+class_name StatRow
+
+var stat := \"<unset>\"
+var value := \"<unset>\"
+
+func setup(s: String, v: Variant) -> void:
+	stat = s
+	value = str(v)
+	%Stat.text = stat
+	%Value.text = value
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_kymoi"]
+line_spacing = 1.0
+font_size = 14
+
+[sub_resource type="LabelSettings" id="LabelSettings_058np"]
+line_spacing = 1.0
+font_size = 14
+
+[node name="StatRow" type="HBoxContainer"]
+script = SubResource("GDScript_kymoi")
+
+[node name="Stat" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stamina"
+label_settings = SubResource("LabelSettings_kymoi")
+
+[node name="Value" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "72"
+label_settings = SubResource("LabelSettings_058np")
+horizontal_alignment = 2

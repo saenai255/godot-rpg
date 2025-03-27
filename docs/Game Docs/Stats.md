@@ -17,7 +17,7 @@ Increases magic damage and healing. Skills use it in their damage and healing fo
 ### Physical Armor
 Reduces incoming physical damage.
 ```python
-chance = (5 + value / 20 + level / 3) / 100
+reduction = (5 + value / 20 + level / 3) / 100
 
 # example results
 # level 10, value 150 => 15.83%
@@ -28,7 +28,7 @@ chance = (5 + value / 20 + level / 3) / 100
 ### Magic Armor
 Reduces incoming magic damage.
 ```python
-chance = (5 + value / 20 + level / 3) / 100
+reduction = (5 + value / 20 + level / 3) / 100
 
 # example results
 # level 10, value 150 => 15.83%

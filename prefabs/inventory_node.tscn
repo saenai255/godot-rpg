@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://db1vdxvi12c80"]
+[gd_scene load_steps=9 format=3 uid="uid://db1vdxvi12c80"]
 
+[ext_resource type="FontFile" uid="uid://bechpevfmm0nf" path="res://fonts/morris-roman/MorrisRomanAlternate-Black.ttf" id="1_j7qfc"]
 [ext_resource type="PackedScene" uid="uid://dg7ydggu8uw0c" path="res://prefabs/item_tooltip.tscn" id="1_qlmxe"]
 
 [sub_resource type="GDScript" id="GDScript_2yeg7"]
@@ -43,6 +44,15 @@ func _process(_delta: float) -> void:
 	if Input.is_key_pressed(KEY_D):
 		PlayerState.inventory.remove_item(active_slot)
 		%ItemTooltip.set_item(null)
+	if Input.is_key_pressed(KEY_E):
+		var slot:= PlayerState.inventory.item_slots[active_slot]
+		if slot != null:
+			if slot.item.slot != Item.EquipmentSlot.None:
+				var last_item := PlayerState.equipped_items.equip(EquippedItems.EquippedItemSlot.MainHand, slot.item)
+				PlayerState.inventory.remove_item(active_slot)
+				if last_item != null:
+					PlayerState.inventory.store_item(last_item)
+			
 
 func set_slot_active(active_slot_idx: int) -> void:
 	if %SlotGrid.get_child_count() == 0:
@@ -59,6 +69,58 @@ func set_slot_active(active_slot_idx: int) -> void:
 			else:
 				%ItemTooltip.set_item(data)		
 "
+
+[sub_resource type="GDScript" id="GDScript_3do4l"]
+script/source = "extends VBoxContainer
+
+const StatRowPrefab := preload(\"res://prefabs/stat_row.tscn\")
+
+func _ready() -> void:
+	update_data(PlayerState.equipped_items.computed_stats)
+	PlayerState.equipped_items.stats_changed.connect(update_data)
+
+func _make_line(header: String, value: Variant):
+	var it = StatRowPrefab.instantiate()
+	%StatsContainer.add_child(it)
+	it.setup(header, value)
+
+func percent(value: float) -> String:
+	return str(floor(value * 10000) / 100.0) + \"%\"
+	
+func update_data(stats: Stats) -> void:
+	var level := PlayerState.level
+	for child in %StatsContainer.get_children():
+		child.visible = false
+		child.queue_free()
+	
+	
+	_make_line(\"Stamina\", stats.stamina)
+	_make_line(\"Strength\", stats.strength)
+	_make_line(\"Intellect\", stats.intellect)
+	_make_line(\"Dexterity\", stats.dexterity)
+	_make_line(\"\", \"\")
+	_make_line(\"Health\", stats.health)
+	_make_line(\"Mana\", stats.mana)
+	_make_line(\"Phys. Power\", stats.physical_power)
+	_make_line(\"Magic Power\", stats.magic_power)
+	_make_line(\"Phys. Armor\", stats.physical_armor)
+	_make_line(\"Magic Armor\", stats.magic_armor)
+	_make_line(\"Critical Rating\", stats.critical_rating)
+	_make_line(\"Critical Power\", stats.critical_power)
+	_make_line(\"Dodge Rating\", stats.dodge_rating)
+	_make_line(\"\", \"\")
+	_make_line(\"Dodge Chance\", percent(stats.get_dodge_chance(level)))
+	_make_line(\"Critical Chance\", percent(stats.get_crit_chance(level)))
+	_make_line(\"Critical Multiplier\", str(floor((stats.get_crit_multiplier(level) + 1) * 100) / 100) + \"x\")
+	_make_line(\"Magic Dmg. Reduction\", percent(stats.get_magic_damage_reduction(level)))
+	_make_line(\"Phys. Dmg. Reduction\", percent(stats.get_phys_damage_reduction(level)))
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_3do4l"]
+font = ExtResource("1_j7qfc")
+font_size = 28
+shadow_size = 2
+shadow_color = Color(0.772549, 0.223529, 0, 0.901961)
 
 [sub_resource type="LabelSettings" id="LabelSettings_qlmxe"]
 
@@ -128,11 +190,37 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
+[node name="CharacterSheet" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(235, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+script = SubResource("GDScript_3do4l")
+
+[node name="Title" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterSheet"]
+layout_mode = 2
+text = "Stats"
+label_settings = SubResource("LabelSettings_3do4l")
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterSheet"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_right = 10
+
+[node name="StatsContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterSheet/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Inventory" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SlotGrid" type="GridContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/Inventory"]
+layout_mode = 2
+text = "Inventory"
+label_settings = SubResource("LabelSettings_3do4l")
+
+[node name="SlotGrid" type="GridContainer" parent="CenterContainer/MarginContainer/HBoxContainer/Inventory"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 150)
 layout_mode = 2
@@ -140,13 +228,14 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 4
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/Inventory"]
 layout_mode = 2
 
-[node name="Currency" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/MarginContainer"]
+[node name="Currency" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/Inventory/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 label_settings = SubResource("LabelSettings_qlmxe")
+horizontal_alignment = 2
 script = SubResource("GDScript_j7qfc")
 
 [node name="ItemTooltip" parent="CenterContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_qlmxe")]
