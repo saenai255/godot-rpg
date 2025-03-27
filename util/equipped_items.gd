@@ -71,7 +71,6 @@ func update_stats() -> void:
 	out.stamina += level
 	out.intellect += level
 	out.dexterity += level
-e
 	out.health += 90 + level * 10 + out.stamina * 10
 	out.mana += 90 + level * 10 + out.intellect * 10
 	out.physical_power += level + out.strength * 2 + out.dexterity
