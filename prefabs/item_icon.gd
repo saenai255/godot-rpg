@@ -33,7 +33,7 @@ func set_active(is_active: bool) -> void:
 	$Active.visible = active
 
 func handle_mouse_entered() -> void:
-	set_active(true)
+	set_active(data != null)
 	if data == null:
 		if tooltip != null:
 			tooltip.queue_free()

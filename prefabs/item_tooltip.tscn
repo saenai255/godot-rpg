@@ -49,17 +49,13 @@ theme_override_constants/margin_right = 3
 theme_override_constants/margin_bottom = 3
 script = ExtResource("1_ymi3x")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 2
-color = Color(0.219608, 0.219608, 0.219608, 0.784314)
-
 [node name="Tooltip" type="MarginContainer" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 50)
+custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="ColorRect" type="ColorRect" parent="Tooltip"]
-visible = false
 layout_mode = 2
 color = Color(0.219608, 0.219608, 0.219608, 0.784314)
 
@@ -76,6 +72,7 @@ theme_override_constants/margin_right = 5
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Tooltip/VBoxContainer/MarginContainer3"]
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="ItemName" type="Label" parent="Tooltip/VBoxContainer/MarginContainer3/VBoxContainer"]
 unique_name_in_owner = true
@@ -210,6 +207,7 @@ size_flags_vertical = 0
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 15
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Tooltip/VBoxContainer/MarginContainer2"]
 layout_mode = 2
