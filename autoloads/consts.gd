@@ -106,6 +106,17 @@ var ITEM_THUNDERFURY := Item.from(
 		item.damage = Item.DamageRange.new(230, 270, Item.DamageType.Physical)
 )
 
+var ITEM_CLOTH_HELMET := Item.from(
+	func(item: Item):
+		item.name = "Ragged Cloth Helmet"
+		item.description = "Doesn't help much"
+		item.stats = Stats.from([
+			Stats.StatValue.new(Stats.Stat.PhysicalArmor, 5)
+		])
+		item.slot = Item.EquipmentSlot.Head
+		item.sell_price = 1
+		item.quality = Item.ItemQuality.Common
+)
 
 var items : Array[Item] = [
 	ITEM_ROPE,
@@ -115,4 +126,5 @@ var items : Array[Item] = [
 	ITEM_STONE_SWORD,
 	ITEM_THUNDERFURY,
 	ITEM_SABIUTA_LU_MARIUCA,
+	ITEM_CLOTH_HELMET,
 ]

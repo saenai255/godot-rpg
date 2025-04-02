@@ -1,5 +1,12 @@
 extends Node
 
+func _ready() -> void:
+	_deferred_ready.call_deferred()
+
+func _deferred_ready() -> void:
+	# Starter Items
+	equipped_items.equip(EquippedItems.EquippedItemSlot.Head, Consts.ITEM_CLOTH_HELMET)
+
 var inventory := Inventory.new()
 var equipped_items := EquippedItems.new()
 
