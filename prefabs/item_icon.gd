@@ -34,7 +34,6 @@ func set_active(is_active: bool) -> void:
 
 func handle_mouse_entered() -> void:
 	set_active(data != null)
-
 	if data == null:
 		if tooltip != null:
 			tooltip.queue_free()
