@@ -1,7 +1,6 @@
-[gd_scene load_steps=15 format=3 uid="uid://ckrjtrxxwqo6k"]
+[gd_scene load_steps=14 format=3 uid="uid://ckrjtrxxwqo6k"]
 
 [ext_resource type="PackedScene" uid="uid://bt242t2mqo16y" path="res://prefabs/player.tscn" id="1_g7g4h"]
-[ext_resource type="Texture2D" uid="uid://d3agkxcadf1os" path="res://icon.svg" id="2_j8ivh"]
 [ext_resource type="PackedScene" uid="uid://dr7a2agu4rdtb" path="res://prefabs/terrains/test_terrain.tscn" id="3_nd71p"]
 [ext_resource type="Texture2D" uid="uid://dmfl3sjeds8ka" path="res://sprites/Idle.png" id="4_7ddre"]
 
@@ -75,11 +74,6 @@ height = 24.0
 
 [node name="TestScene" type="Node2D"]
 y_sort_enabled = true
-
-[node name="Icon" type="Sprite2D" parent="."]
-position = Vector2(-259, 41)
-texture = ExtResource("2_j8ivh")
-offset = Vector2(-1, 52)
 
 [node name="TestTerrain" parent="." instance=ExtResource("3_nd71p")]
 
