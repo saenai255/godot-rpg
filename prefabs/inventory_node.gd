@@ -40,8 +40,12 @@ func handle_gui_input(inventory_slot: Inventory.ItemQuantity, slot_idx: int, eve
 		if slot == EquippedItems.EquippedItemSlot.None:
 			return
 	
+		var prev_equipped_item := PlayerState.equipped_items.items[slot]
 		PlayerState.equipped_items.equip(slot, inventory_slot.item)
 		PlayerState.inventory.remove_item(slot_idx)
 		print_debug('equipped item %s' % [inventory_slot.item.name])
+		if prev_equipped_item != null:
+			PlayerState.inventory.store_item(prev_equipped_item)
+			print_debug('prev equipped item sent to inventory %s' % [prev_equipped_item.name])
 
 const ItemSlot = Item.EquipmentSlot
