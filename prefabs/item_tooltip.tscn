@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dg7ydggu8uw0c"]
+[gd_scene load_steps=12 format=3 uid="uid://dg7ydggu8uw0c"]
 
 [ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="1_6rs50"]
 [ext_resource type="Script" uid="uid://8ara0l4rgnwt" path="res://prefabs/item_tooltip.gd" id="1_ymi3x"]
@@ -31,6 +31,14 @@ font_color = Color(0.270588, 1, 0.321569, 1)
 font = ExtResource("2_ymi3x")
 font_size = 18
 font_color = Color(1, 1, 0.376471, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_wlbhk"]
+font = ExtResource("2_ymi3x")
+font_size = 18
+
+[sub_resource type="LabelSettings" id="LabelSettings_cn3rj"]
+font = ExtResource("2_ymi3x")
+font_size = 18
 
 [node name="MarginContainer" type="MarginContainer"]
 size_flags_horizontal = 3
@@ -194,4 +202,32 @@ layout_mode = 2
 size_flags_vertical = 1
 text = "Some short item description goes here."
 label_settings = SubResource("LabelSettings_2yeg7")
+autowrap_mode = 3
+
+[node name="MarginContainer2" type="MarginContainer" parent="Tooltip/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tooltip/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+
+[node name="Description" type="Label" parent="Tooltip/VBoxContainer/MarginContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "Sell Price"
+label_settings = SubResource("LabelSettings_wlbhk")
+autowrap_mode = 3
+
+[node name="SellPrice" type="Label" parent="Tooltip/VBoxContainer/MarginContainer2/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 1
+text = "15c"
+label_settings = SubResource("LabelSettings_cn3rj")
+horizontal_alignment = 2
 autowrap_mode = 3

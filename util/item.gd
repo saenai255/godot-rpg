@@ -57,19 +57,21 @@ var stats: Stats
 var slot: EquipmentSlot
 var weapon_slot: WeaponSlot
 var damage: DamageRange
+var sell_price: int
 
 static var last_id := 0
 
 func _init():
 	last_id += 1
 	id = last_id
-	texture = load("res://icon.svg")
+	texture = load("res://iconplaceholder64x64.png")
 	stats = Stats.new()
 	quality = ItemQuality.Junk
 	slot = EquipmentSlot.None
 	stack_size = Consts.UNSTACKABLE
 	weapon_slot = WeaponSlot.None
 	damage = null
+	sell_price = 0
 
 static func from(cb: Callable) -> Item:
 	var item: Item = new()

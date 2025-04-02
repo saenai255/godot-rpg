@@ -21,6 +21,7 @@ var ITEM_PLANT_FIBER := Item.from(
 		item.description = "Thin, flexible fibers harvested from plants, ideal for crafting basic clothing or ropes."
 		item.stack_size = LARGE_STACK
 		item.texture = 	_atlas_tex(TEX_CRAFTING_MATS, Rect2(24 * 1, 24 * 9, 24, 24))
+		item.sell_price = 10
 )
 
 var ITEM_WOOD_LOG := Item.from(

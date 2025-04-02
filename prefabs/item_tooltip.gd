@@ -16,7 +16,15 @@ func set_item(data: Inventory.ItemQuantity) -> void:
 	set_equipment_type(data.item)
 	set_weapon_type(data.item)
 	set_weapon_damage(data.item)
+	set_item_sell_price(data.item)
 	%Tooltip.visible = true
+
+func set_item_sell_price(item: Item) -> void:
+	var text := "Cannot Sell"
+	if item.sell_price > 0:
+		text = Common.format_currency(item.sell_price)
+	
+	%SellPrice.text = text
 
 func set_weapon_damage(item: Item) -> void:
 	%WeaponDamageContainer.visible = item.damage != null

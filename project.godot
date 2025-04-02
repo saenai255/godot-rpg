@@ -21,6 +21,7 @@ config/icon="res://icon.svg"
 Keybinds="*res://autoloads/keybinds.gd"
 PlayerState="*res://autoloads/player_state.gd"
 Consts="*res://autoloads/consts.gd"
+Common="*res://autoloads/common.gd"
 
 [display]
 
