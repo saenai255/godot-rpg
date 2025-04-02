@@ -13,6 +13,9 @@ enum EquippedItemSlot {
 	Finger2 = 8,
 	MainHand = 9,
 	OffHand = 10,
+	Back = 11,
+	Legs = 12,
+	Feet = 13,
 }
 
 signal items_changed()

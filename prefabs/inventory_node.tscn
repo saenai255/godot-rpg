@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://db1vdxvi12c80"]
+[gd_scene load_steps=16 format=3 uid="uid://db1vdxvi12c80"]
 
 [ext_resource type="FontFile" uid="uid://bechpevfmm0nf" path="res://fonts/morris-roman/MorrisRomanAlternate-Black.ttf" id="1_j7qfc"]
 [ext_resource type="PackedScene" uid="uid://dg7ydggu8uw0c" path="res://prefabs/item_tooltip.tscn" id="1_qlmxe"]
@@ -69,6 +69,40 @@ func set_slot_active(active_slot_idx: int) -> void:
 				%ItemTooltip.set_item(null)
 			else:
 				%ItemTooltip.set_item(data)		
+"
+
+[sub_resource type="GDScript" id="GDScript_3h61v"]
+script/source = "extends VBoxContainer
+
+const Slot = EquippedItems.EquippedItemSlot
+
+func _ready() -> void:
+	update_character()
+	PlayerState.equipped_items.items_changed.connect(update_character)
+
+func update_item_texture(node: TextureRect, slot: Slot) -> void:
+	var item: Item = PlayerState.equipped_items.items.get(slot, null)
+	if item == null:
+		node.texture = null
+	else:
+		node.texture = item.texture
+
+func update_character() -> void:
+	update_item_texture(%MainHand, Slot.MainHand)
+	update_item_texture(%OffHand, Slot.OffHand)
+	update_item_texture(%Head, Slot.Head)
+	update_item_texture(%Neck, Slot.Neck)
+	update_item_texture(%Shoulders, Slot.Shoulders)
+	update_item_texture(%Back, Slot.Back)
+	update_item_texture(%Chest, Slot.Chest)
+	update_item_texture(%Hands, Slot.Hands)
+	update_item_texture(%Legs, Slot.Legs)
+	update_item_texture(%Feet, Slot.Feet)
+	update_item_texture(%Finger1, Slot.Finger1)
+	update_item_texture(%Finger2, Slot.Finger2)
+	update_item_texture(%Ear1, Slot.Ear1)
+	update_item_texture(%Ear2, Slot.Ear2)
+	
 "
 
 [sub_resource type="LabelSettings" id="LabelSettings_3do4l"]
@@ -200,6 +234,7 @@ func _process(_delta: float) -> void:
 script = SubResource("GDScript_2yeg7")
 
 [node name="CenterContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(0, 500)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -229,88 +264,244 @@ layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
+[node name="CharacterContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+script = SubResource("GDScript_3h61v")
 
-[node name="Title" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer"]
 layout_mode = 2
 text = "Character"
 label_settings = SubResource("LabelSettings_3do4l")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer"]
-position = Vector2(148, 126)
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer"]
+position = Vector2(149, 164)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_5c0i5")
 autoplay = "default"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="LeftColumn" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="Head" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="MarginContainer3" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer3"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Neck" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Head" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer3"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer4" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer4"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Shoulders" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Neck" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer4"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer5" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer5"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Chest" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Shoulders" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer5"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer6" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer6"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Hands" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="Back" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer6"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer7" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer7"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="Chest" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer7"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer8" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer8"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+color = Color(0, 0, 0, 0.270588)
+
+[node name="Hands" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer8"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MiddleColumn" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn"]
+layout_mode = 2
+alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer"]
 layout_mode = 2
 
-[node name="Legs" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Feet" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="MainHand" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer2"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Ear1" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="OffHand" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="RightColumn" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer3" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer3"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Ear2" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Legs" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer3"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer4" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer4"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
 
-[node name="Finger" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="Feet" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer4"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer5" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer5"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 color = Color(0, 0, 0, 0.270588)
+
+[node name="Ear1" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer5"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer6" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer6"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+color = Color(0, 0, 0, 0.270588)
+
+[node name="Ear2" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer6"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer7" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer7"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+color = Color(0, 0, 0, 0.270588)
+
+[node name="Finger1" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer7"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+
+[node name="MarginContainer8" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
+layout_mode = 2
+
+[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer8"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+color = Color(0, 0, 0, 0.270588)
+
+[node name="Finger2" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer8"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
 
 [node name="CharacterSheet" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(235, 0)

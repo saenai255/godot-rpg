@@ -1,4 +1,4 @@
-[gd_scene load_steps=97 format=3 uid="uid://bt242t2mqo16y"]
+[gd_scene load_steps=98 format=3 uid="uid://bt242t2mqo16y"]
 
 [ext_resource type="Texture2D" uid="uid://bkbiqs0dntriu" path="res://sprites/vampires/PNG/Vampires1/Attack/Vampires1_Attack_full.png" id="1_1txc5"]
 [ext_resource type="Texture2D" uid="uid://dp1hwjyjmwop7" path="res://sprites/vampires/PNG/Vampires1/Idle/Vampires1_Idle_full.png" id="1_72ieh"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://daxdqn2t0xytr" path="res://prefabs/keybinds_overlay.tscn" id="5_ht1c8"]
 [ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="6_g2jcq"]
 [ext_resource type="Texture2D" uid="uid://8cxuhnrsfgcn" path="res://sprites/Ui_spells.png" id="7_u51tk"]
+[ext_resource type="Texture2D" uid="uid://btyra0pxr5uoo" path="res://sprites/iconplaceholder64x64.png" id="8_kbsxf"]
 
 [sub_resource type="GDScript" id="GDScript_8kmhe"]
 resource_name = "vampire.gd"
@@ -839,11 +840,30 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -497.0
-offset_top = -298.0
-offset_right = 3.0
-offset_bottom = -123.0
+offset_left = -279.0
+offset_top = -165.0
+offset_right = 221.0
+offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 0
-scale = Vector2(2, 2)
 texture = ExtResource("7_u51tk")
+
+[node name="SpellIcon1" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+position = Vector2(78, 83)
+texture = ExtResource("8_kbsxf")
+
+[node name="SpellIcon2" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+position = Vector2(165, 83)
+texture = ExtResource("8_kbsxf")
+
+[node name="SpellIcon3" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+position = Vector2(250, 83)
+texture = ExtResource("8_kbsxf")
+
+[node name="SpellIcon4" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+position = Vector2(338, 83)
+texture = ExtResource("8_kbsxf")
+
+[node name="SpellIcon5" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+position = Vector2(424, 83)
+texture = ExtResource("8_kbsxf")
