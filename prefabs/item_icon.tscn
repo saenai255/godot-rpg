@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://8jw53gmsr6ms"]
+
+[ext_resource type="Script" uid="uid://j0ftwj2e5wlx" path="res://prefabs/item_icon.gd" id="1_jarc4"]
+[ext_resource type="Texture2D" uid="uid://btyra0pxr5uoo" path="res://sprites/iconplaceholder64x64.png" id="2_jarc4"]
+
+[node name="ItemIcon" type="MarginContainer"]
+script = ExtResource("1_jarc4")
+
+[node name="Active" type="ColorRect" parent="."]
+visible = false
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+color = Color(0.0509804, 0.788235, 1, 0.862745)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_jarc4")
+expand_mode = 1
+
+[node name="Quantity" type="Label" parent="MarginContainer/TextureRect"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.953
+anchor_bottom = 0.953
+offset_right = 0.00799561
+offset_bottom = 0.00799561
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[node name="ColorRect" type="ColorRect" parent="MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+color = Color(0.223529, 0.223529, 0.223529, 0.878431)

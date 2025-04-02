@@ -16,6 +16,7 @@ enum EquippedItemSlot {
 	Back = 11,
 	Legs = 12,
 	Feet = 13,
+	None = 14,
 }
 
 signal items_changed()

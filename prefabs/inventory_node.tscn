@@ -1,109 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://db1vdxvi12c80"]
+[gd_scene load_steps=15 format=3 uid="uid://db1vdxvi12c80"]
 
+[ext_resource type="Script" uid="uid://cd4x842qipgfb" path="res://prefabs/inventory_node.gd" id="1_3h61v"]
 [ext_resource type="FontFile" uid="uid://bechpevfmm0nf" path="res://fonts/morris-roman/MorrisRomanAlternate-Black.ttf" id="1_j7qfc"]
-[ext_resource type="PackedScene" uid="uid://dg7ydggu8uw0c" path="res://prefabs/item_tooltip.tscn" id="1_qlmxe"]
 [ext_resource type="Texture2D" uid="uid://dp1hwjyjmwop7" path="res://sprites/vampires/PNG/Vampires1/Idle/Vampires1_Idle_full.png" id="2_3do4l"]
-
-[sub_resource type="GDScript" id="GDScript_2yeg7"]
-script/source = "extends CanvasLayer
-
-const INVENTORY_SIZE := Inventory.INVENTORY_SIZE
-
-const InventorySlotPrefab := preload(\"res://prefabs/inventory_slot.tscn\")
-var active_slot := 0
-var cols : int
-func _ready() -> void:
-	cols = %SlotGrid.columns
-	PlayerState.inventory.changed.connect(render_slots)
-	render_slots()
-	set_slot_active(0)
-
-func render_slots() -> void:
-	for child in %SlotGrid.get_children():
-		child.queue_free()
-	
-	for slot in PlayerState.inventory.item_slots:
-		var inventory_slot := InventorySlotPrefab.instantiate()
-		
-		inventory_slot.data = slot
-		inventory_slot.active = false
-		
-		%SlotGrid.add_child(
-			inventory_slot
-		)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed(\"move_right\"):
-		active_slot = (active_slot + 1) if active_slot + 1 < INVENTORY_SIZE else 0
-		set_slot_active(active_slot)
-	elif Input.is_action_just_pressed(\"move_left\"):
-		active_slot = (active_slot - 1) if active_slot - 1 >= 0 else INVENTORY_SIZE - 1
-		set_slot_active(active_slot)
-	
-	
-	if Input.is_key_pressed(KEY_D):
-		PlayerState.inventory.remove_item(active_slot)
-		%ItemTooltip.set_item(null)
-	if Input.is_key_pressed(KEY_E):
-		var slot:= PlayerState.inventory.item_slots[active_slot]
-		if slot != null:
-			if slot.item.slot != Item.EquipmentSlot.None:
-				var last_item := PlayerState.equipped_items.equip(EquippedItems.EquippedItemSlot.MainHand, slot.item)
-				PlayerState.inventory.remove_item(active_slot)
-				if last_item != null:
-					PlayerState.inventory.store_item(last_item)
-			
-
-func set_slot_active(active_slot_idx: int) -> void:
-	if %SlotGrid.get_child_count() == 0:
-		return
-	
-	for slot_idx in Inventory.INVENTORY_SIZE:
-		var slot := %SlotGrid.get_child(slot_idx)
-		slot.set_active(slot_idx == active_slot_idx)
-	
-		if slot.active:
-			var data := PlayerState.inventory.item_slots[slot_idx]
-			if data == null:
-				%ItemTooltip.set_item(null)
-			else:
-				%ItemTooltip.set_item(data)		
-"
-
-[sub_resource type="GDScript" id="GDScript_3h61v"]
-script/source = "extends VBoxContainer
-
-const Slot = EquippedItems.EquippedItemSlot
-
-func _ready() -> void:
-	update_character()
-	PlayerState.equipped_items.items_changed.connect(update_character)
-
-func update_item_texture(node: TextureRect, slot: Slot) -> void:
-	var item: Item = PlayerState.equipped_items.items.get(slot, null)
-	if item == null:
-		node.texture = null
-	else:
-		node.texture = item.texture
-
-func update_character() -> void:
-	update_item_texture(%MainHand, Slot.MainHand)
-	update_item_texture(%OffHand, Slot.OffHand)
-	update_item_texture(%Head, Slot.Head)
-	update_item_texture(%Neck, Slot.Neck)
-	update_item_texture(%Shoulders, Slot.Shoulders)
-	update_item_texture(%Back, Slot.Back)
-	update_item_texture(%Chest, Slot.Chest)
-	update_item_texture(%Hands, Slot.Hands)
-	update_item_texture(%Legs, Slot.Legs)
-	update_item_texture(%Feet, Slot.Feet)
-	update_item_texture(%Finger1, Slot.Finger1)
-	update_item_texture(%Finger2, Slot.Finger2)
-	update_item_texture(%Ear1, Slot.Ear1)
-	update_item_texture(%Ear2, Slot.Ear2)
-	
-"
+[ext_resource type="Script" uid="uid://dl26y3qed5rj4" path="res://prefabs/character_container.gd" id="2_l43ab"]
+[ext_resource type="Script" uid="uid://dnig2kvgx6mu5" path="res://prefabs/character_sheet.gd" id="5_5c0i5"]
+[ext_resource type="PackedScene" uid="uid://8jw53gmsr6ms" path="res://prefabs/item_icon.tscn" id="5_l43ab"]
+[ext_resource type="Script" uid="uid://tw66y37edec2" path="res://prefabs/inventory_currency.gd" id="6_wnich"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_3do4l"]
 font = ExtResource("1_j7qfc")
@@ -147,91 +50,10 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="GDScript" id="GDScript_3do4l"]
-script/source = "extends VBoxContainer
-
-const StatRowPrefab := preload(\"res://prefabs/stat_row.tscn\")
-
-func _ready() -> void:
-	update_data(PlayerState.equipped_items.computed_stats)
-	PlayerState.equipped_items.stats_changed.connect(update_data)
-
-func _make_line(header: String, value: Variant):
-	var it = StatRowPrefab.instantiate()
-	%StatsContainer.add_child(it)
-	it.setup(header, value)
-
-func percent(value: float) -> String:
-	return str(floor(value * 10000) / 100.0) + \"%\"
-	
-func update_data(stats: Stats) -> void:
-	var level := PlayerState.level
-	for child in %StatsContainer.get_children():
-		child.visible = false
-		child.queue_free()
-	
-	
-	_make_line(\"Stamina\", stats.stamina)
-	_make_line(\"Strength\", stats.strength)
-	_make_line(\"Intellect\", stats.intellect)
-	_make_line(\"Dexterity\", stats.dexterity)
-	_make_line(\"\", \"\")
-	_make_line(\"Health\", stats.health)
-	_make_line(\"Mana\", stats.mana)
-	_make_line(\"Phys. Power\", stats.physical_power)
-	_make_line(\"Magic Power\", stats.magic_power)
-	_make_line(\"Phys. Armor\", stats.physical_armor)
-	_make_line(\"Magic Armor\", stats.magic_armor)
-	_make_line(\"Critical Rating\", stats.critical_rating)
-	_make_line(\"Critical Power\", stats.critical_power)
-	_make_line(\"Dodge Rating\", stats.dodge_rating)
-	_make_line(\"\", \"\")
-	_make_line(\"Dodge Chance\", percent(stats.get_dodge_chance(level)))
-	_make_line(\"Critical Chance\", percent(stats.get_crit_chance(level)))
-	_make_line(\"Critical Multiplier\", str(floor((stats.get_crit_multiplier(level) + 1) * 100) / 100) + \"x\")
-	_make_line(\"Magic Dmg. Reduction\", percent(stats.get_magic_damage_reduction(level)))
-	_make_line(\"Phys. Dmg. Reduction\", percent(stats.get_phys_damage_reduction(level)))
-"
-
 [sub_resource type="LabelSettings" id="LabelSettings_qlmxe"]
 
-[sub_resource type="GDScript" id="GDScript_j7qfc"]
-script/source = "extends Label
-
-const MULT = 1000
-
-func _ready() -> void:
-	set_currency(PlayerState.currency)
-	PlayerState.currency_changed.connect(set_currency)
-	
-func set_currency(value: int) -> void:
-	var gold := floori(value / MULT / MULT)
-	var silver := floori(value / MULT) % MULT
-	var copper := value % MULT
-	text = \"{gold}g {silver}s {copper}c\".format({
-		\"gold\": gold,
-		\"silver\": silver,
-		\"copper\": copper
-	})
-"
-
-[sub_resource type="GDScript" id="GDScript_qlmxe"]
-script/source = "extends Button
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pressed.connect(func():
-		PlayerState.inventory.store_item_quantity(Consts.ITEM_PLANT_FIBER, 10))
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	pass
-"
-
 [node name="CanvasLayer" type="CanvasLayer"]
-script = SubResource("GDScript_2yeg7")
+script = ExtResource("1_3h61v")
 
 [node name="CenterContainer" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(0, 500)
@@ -268,7 +90,7 @@ alignment = 1
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-script = SubResource("GDScript_3h61v")
+script = ExtResource("2_l43ab")
 
 [node name="Title" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer"]
 layout_mode = 2
@@ -294,86 +116,50 @@ layout_mode = 2
 [node name="MarginContainer3" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer3"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Head" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer3"]
+[node name="Head" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer3" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer4" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer4"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Neck" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer4"]
+[node name="Neck" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer4" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer5" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer5"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Shoulders" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer5"]
+[node name="Shoulders" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer5" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer6" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer6"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Back" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer6"]
+[node name="Back" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer6" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer7" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer7"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Chest" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer7"]
+[node name="Chest" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer7" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer8" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer8"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Hands" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer8"]
+[node name="Hands" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/LeftColumn/MarginContainer8" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MiddleColumn" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -391,30 +177,18 @@ alignment = 1
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="MainHand" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer"]
+[node name="MainHand" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../../..")
 
 [node name="MarginContainer2" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer2"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="OffHand" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer2"]
+[node name="OffHand" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/MiddleColumn/HBoxContainer/MarginContainer2" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../../..")
 
 [node name="RightColumn" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -422,92 +196,56 @@ layout_mode = 2
 [node name="MarginContainer3" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer3"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Legs" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer3"]
+[node name="Legs" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer3" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer4" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer4"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Feet" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer4"]
+[node name="Feet" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer4" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer5" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer5"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Ear1" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer5"]
+[node name="Ear1" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer5" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer6" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer6"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Ear2" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer6"]
+[node name="Ear2" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer6" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer7" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer7"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Finger1" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer7"]
+[node name="Finger1" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer7" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="MarginContainer8" type="MarginContainer" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn"]
 layout_mode = 2
 
-[node name="Underlay" type="ColorRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer8"]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-color = Color(0, 0, 0, 0.270588)
-
-[node name="Finger2" type="TextureRect" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer8"]
+[node name="Finger2" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer/HBoxContainer/RightColumn/MarginContainer8" node_paths=PackedStringArray("canvas") instance=ExtResource("5_l43ab")]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-expand_mode = 1
+canvas = NodePath("../../../../../../../../..")
 
 [node name="CharacterSheet" type="VBoxContainer" parent="CenterContainer/MarginContainer/HBoxContainer"]
 custom_minimum_size = Vector2(235, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-script = SubResource("GDScript_3do4l")
+script = ExtResource("5_5c0i5")
 metadata/_edit_lock_ = true
 
 [node name="Title" type="Label" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterSheet"]
@@ -551,17 +289,4 @@ unique_name_in_owner = true
 layout_mode = 2
 label_settings = SubResource("LabelSettings_qlmxe")
 horizontal_alignment = 2
-script = SubResource("GDScript_j7qfc")
-
-[node name="ItemTooltip" parent="CenterContainer/MarginContainer/HBoxContainer" instance=ExtResource("1_qlmxe")]
-unique_name_in_owner = true
-layout_mode = 2
-metadata/_edit_lock_ = true
-
-[node name="DebugAddPlantFiber" type="Button" parent="."]
-offset_left = 861.0
-offset_top = 52.0
-offset_right = 1035.0
-offset_bottom = 99.0
-text = "Add 10x Plant Fiber"
-script = SubResource("GDScript_qlmxe")
+script = ExtResource("6_wnich")
