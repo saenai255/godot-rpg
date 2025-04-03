@@ -813,10 +813,12 @@ zoom = Vector2(4, 4)
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="KeybindsOverlay" parent="CanvasLayer" instance=ExtResource("5_ht1c8")]
-offset_left = 17.0
-offset_top = 9.0
-offset_right = 17.0
-offset_bottom = 9.0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+scale = Vector2(0.75, 0.75)
 
 [node name="Version" type="Label" parent="CanvasLayer"]
 anchors_preset = 3
@@ -834,7 +836,7 @@ horizontal_alignment = 2
 vertical_alignment = 2
 script = SubResource("GDScript_g2jcq")
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+[node name="Spellbar" type="TextureRect" parent="CanvasLayer"]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
@@ -848,22 +850,22 @@ grow_horizontal = 2
 grow_vertical = 0
 texture = ExtResource("7_u51tk")
 
-[node name="SpellIcon1" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+[node name="SpellIcon1" type="Sprite2D" parent="CanvasLayer/Spellbar"]
 position = Vector2(78, 83)
 texture = ExtResource("8_kbsxf")
 
-[node name="SpellIcon2" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+[node name="SpellIcon2" type="Sprite2D" parent="CanvasLayer/Spellbar"]
 position = Vector2(165, 83)
 texture = ExtResource("8_kbsxf")
 
-[node name="SpellIcon3" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+[node name="SpellIcon3" type="Sprite2D" parent="CanvasLayer/Spellbar"]
 position = Vector2(250, 83)
 texture = ExtResource("8_kbsxf")
 
-[node name="SpellIcon4" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+[node name="SpellIcon4" type="Sprite2D" parent="CanvasLayer/Spellbar"]
 position = Vector2(338, 83)
 texture = ExtResource("8_kbsxf")
 
-[node name="SpellIcon5" type="Sprite2D" parent="CanvasLayer/TextureRect"]
+[node name="SpellIcon5" type="Sprite2D" parent="CanvasLayer/Spellbar"]
 position = Vector2(424, 83)
 texture = ExtResource("8_kbsxf")

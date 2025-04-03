@@ -102,7 +102,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CenterContainer/MarginContainer/HBoxContainer/CharacterContainer/VBoxContainer"]
-position = Vector2(149, 164)
+position = Vector2(178, 164)
 scale = Vector2(4, 4)
 sprite_frames = SubResource("SpriteFrames_5c0i5")
 autoplay = "default"

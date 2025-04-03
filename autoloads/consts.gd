@@ -116,6 +116,7 @@ var ITEM_CLOTH_HELMET := Item.from(
 		item.slot = Item.EquipmentSlot.Head
 		item.sell_price = 1
 		item.quality = Item.ItemQuality.Common
+		item.texture = preload("res://sprites/ragged_cloth_helmet_32x32.png")
 )
 
 var items : Array[Item] = [

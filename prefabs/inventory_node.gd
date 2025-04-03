@@ -29,6 +29,7 @@ func render_slots() -> void:
 
 		slot_idx += 1
 
+
 func is_right_click_released(event: InputEvent) -> bool:
 	return event is InputEventMouseButton and event.button_index == 2 and event.is_released()
 
@@ -36,6 +37,11 @@ func handle_gui_input(inventory_slot: Inventory.ItemQuantity, slot_idx: int, eve
 	if is_right_click_released(event):
 		if inventory_slot == null:
 			return
+		if event is InputEventMouseButton:
+			if event.shift_pressed:
+				PlayerState.inventory.remove_item(slot_idx)
+				print_debug("removed item %s" % [inventory_slot.item.name])
+				return
 		var slot := inventory_slot.item.get_equip_slot()
 		if slot == EquippedItems.EquippedItemSlot.None:
 			return
