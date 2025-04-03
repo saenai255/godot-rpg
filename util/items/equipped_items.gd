@@ -1,49 +1,32 @@
 extends Node
 class_name EquippedItems
 
-enum EquippedItemSlot {
-	Head = 0,
-	Neck = 1,
-	Ear1 = 2,
-	Ear2 = 3,
-	Shoulders = 4,
-	Chest = 5,
-	Hands = 6,
-	Finger1 = 7,
-	Finger2 = 8,
-	MainHand = 9,
-	OffHand = 10,
-	Back = 11,
-	Legs = 12,
-	Feet = 13,
-	None = 14,
-}
 
 signal items_changed()
 signal stats_changed(stats: Stats)
 
-var items : Dictionary[EquippedItemSlot, Item] = {}
+var items : Dictionary[ItemEnums.EquipmentSlot, Item] = {}
 var computed_stats := Stats.new()
 
 func _init() -> void:
 	deferred_init.call_deferred()
 
 func deferred_init() -> void:
-	for key in EquippedItemSlot.keys():
-		items.set(EquippedItemSlot[key], null)
+	for key in ItemEnums.EquipmentSlot.keys():
+		items.set(ItemEnums.EquipmentSlot[key], null)
 	
 	update_stats()
 	items_changed.connect(update_stats)
 	PlayerState.level_changed.connect(update_stats)
 	
 
-func equip(slot: EquippedItemSlot, item: Item) -> Item:
+func equip(slot: ItemEnums.EquipmentSlot, item: Item) -> Item:
 	var last_item: Item = items.get(slot, null)
 	items.set(slot, item)
 	items_changed.emit()
 	return last_item
 
-func unequip(slot: EquippedItemSlot) -> Item:
+func unequip(slot: ItemEnums.EquipmentSlot) -> Item:
 	var last_item: Item = items.get(slot, null)
 	items.set(slot, null)
 	items_changed.emit()

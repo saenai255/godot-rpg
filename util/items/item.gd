@@ -1,61 +1,15 @@
 class_name Item
 
-enum ItemQuality {
-	Junk,
-	Common,
-	Uncommon,
-	Rare,
-	Epic,
-	Legendary
-}
-
-enum EquipmentSlot {
-	None,
-	Head,
-	Chest,
-	Shoulders,
-	Back,
-	Legs,
-	Feet,
-	Hands,
-	Neck,
-	Finger,
-	Ear,
-	Weapon,
-}
-
-enum WeaponSlot {
-	None,
-	OneHand,
-	OffHand,
-	MainHand,
-	TwoHand
-}
-
-enum DamageType {
-	Physical,
-	Magical
-}
-
-class DamageRange:
-	var min: int
-	var max: int
-	var type: DamageType
-	
-	func _init(from: int, to: int, typ: DamageType):
-		self.min = from
-		self.max = to
-		self.type = typ
-
-var id: int
+var template: ItemTemplate
+var entry_id: int
 var name: String
 var description: String
 var stack_size: int
 var texture: Texture2D
-var quality: ItemQuality
+var quality: ItemEnums.Quality
 var stats: Stats
-var slot: EquipmentSlot
-var weapon_slot: WeaponSlot
+var slot: ItemEnums.Slot
+var weapon_slot: ItemEnums.WeaponSlot
 var damage: DamageRange
 var sell_price: int
 
@@ -63,13 +17,13 @@ static var last_id := 0
 
 func _init():
 	last_id += 1
-	id = last_id
+	entry_id = last_id
 	texture = load("res://iconplaceholder64x64.png")
 	stats = Stats.new()
-	quality = ItemQuality.Junk
-	slot = EquipmentSlot.None
+	quality = ItemEnums.Quality.Junk
+	slot = ItemEnums.Slot.None
 	stack_size = Consts.UNSTACKABLE
-	weapon_slot = WeaponSlot.None
+	weapon_slot = ItemEnums.WeaponSlot.None
 	damage = null
 	sell_price = 0
 
@@ -79,16 +33,17 @@ static func from(cb: Callable) -> Item:
 	return item
 	
 func _to_string() -> String:
-	return "Item(id: %d, name: '%s', quality: %s, description: '%s', stack_size: %d)" % [id, name, quality, description, stack_size]
+	return "Item(id: %d, name: '%s', quality: %s, description: '%s', stack_size: %d)" % [template.id, name, quality, description, stack_size]
 
-const EquipSlot = EquippedItems.EquippedItemSlot
+const EquipSlot = ItemEnums.EquipmentSlot
+const EquipmentSlot = ItemEnums.Slot
 
 func get_equip_slot() -> EquipSlot:
 	var item := self
 	if item.slot == EquipmentSlot.Weapon:
-		if item.weapon_slot == Item.WeaponSlot.MainHand or item.weapon_slot == Item.WeaponSlot.OneHand or item.weapon_slot == Item.WeaponSlot.TwoHand:
+		if item.weapon_slot == ItemEnums.WeaponSlot.MainHand or item.weapon_slot == ItemEnums.WeaponSlot.OneHand or item.weapon_slot == ItemEnums.WeaponSlot.TwoHand:
 			return EquipSlot.MainHand
-		if item.weapon_slot == Item.WeaponSlot.OffHand:
+		if item.weapon_slot == ItemEnums.WeaponSlot.OffHand:
 			return EquipSlot.OffHand
 	if item.slot == EquipmentSlot.Head:
 		return EquipSlot.Head

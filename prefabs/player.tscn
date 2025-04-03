@@ -2,121 +2,13 @@
 
 [ext_resource type="Texture2D" uid="uid://bkbiqs0dntriu" path="res://sprites/vampires/PNG/Vampires1/Attack/Vampires1_Attack_full.png" id="1_1txc5"]
 [ext_resource type="Texture2D" uid="uid://dp1hwjyjmwop7" path="res://sprites/vampires/PNG/Vampires1/Idle/Vampires1_Idle_full.png" id="1_72ieh"]
+[ext_resource type="Script" uid="uid://545syntwrmt0" path="res://prefabs/player.gd" id="1_rgeog"]
 [ext_resource type="Texture2D" uid="uid://t6tvmgp7cg4d" path="res://sprites/vampires/PNG/Vampires1/Walk/Vampires1_Walk_full.png" id="2_4dohe"]
 [ext_resource type="Texture2D" uid="uid://d3xqdbhgkuv1v" path="res://sprites/vampires/PNG/Vampires1/Run/Vampires1_Run_full.png" id="2_r66lb"]
 [ext_resource type="PackedScene" uid="uid://daxdqn2t0xytr" path="res://prefabs/keybinds_overlay.tscn" id="5_ht1c8"]
 [ext_resource type="FontFile" uid="uid://depje1lfv5nx8" path="res://fonts/morris-roman/MorrisRoman-Black.ttf" id="6_g2jcq"]
 [ext_resource type="Texture2D" uid="uid://8cxuhnrsfgcn" path="res://sprites/Ui_spells.png" id="7_u51tk"]
 [ext_resource type="Texture2D" uid="uid://btyra0pxr5uoo" path="res://sprites/iconplaceholder64x64.png" id="8_kbsxf"]
-
-[sub_resource type="GDScript" id="GDScript_8kmhe"]
-resource_name = "vampire.gd"
-script/source = "extends CharacterBody2D
-
-class_name Player
-
-const InventoryPrefab := preload(\"res://prefabs/inventory_node.tscn\")
-const DebugConsolePrefab := preload(\"res://prefabs/debug_console.tscn\")
-
-var SPEED := 100.0
-const RUN_SPEED_MULTIPLIER := 1.7
-
-enum Direction { Left, Right, Up, Down }
-var last_direction := Direction.Left
-
-enum AnimationState { Busy, Ready }
-var animation_state := AnimationState.Ready
-
-var input_vector := Vector2.ZERO
-var is_running := false
-var is_inventory_open := false
-
-var inventory: CanvasLayer = null
-var debug_console : Control = null
-
-func _ready() -> void:
-	$AnimatedSprite2D.play(\"idle_front\")
-	PlayerState.player_instance = self
-	PlayerState.inventory.store_item_quantity(Consts.ITEM_PLANT_FIBER, 15)
-	PlayerState.inventory.store_item_quantity(Consts.ITEM_ROUGH_STONE, 15)
-	PlayerState.inventory.store_item_quantity(Consts.ITEM_WOOD_LOG, 10)
-	PlayerState.inventory.store_item(Consts.ITEM_ROPE)
-	PlayerState.inventory.store_item(Consts.ITEM_STONE_SWORD)
-	PlayerState.set_currency(123456789)
-
-func _physics_process(_delta: float) -> void:
-	if Input.is_action_just_pressed(\"toggle_console\"):
-		if debug_console == null:
-			debug_console = DebugConsolePrefab.instantiate()
-			$CanvasLayer.add_child(debug_console)
-		else:
-			debug_console.toggle()
-	if debug_console != null and debug_console.visible:
-		return
-	
-	if Input.is_action_just_pressed(\"toggle_inventory\"):
-		is_inventory_open = !is_inventory_open
-		
-		if is_inventory_open:
-			inventory = InventoryPrefab.instantiate()
-			add_child(inventory)
-		else:
-			inventory.queue_free()
-		
-	
-	if is_inventory_open:
-		return
-	
-	input_vector = Input.get_vector(\"move_left\", \"move_right\", \"move_up\", \"move_down\").normalized()
-	is_running = Input.is_action_pressed(\"sprint\")
-	
-	velocity = input_vector * (SPEED * RUN_SPEED_MULTIPLIER if is_running else SPEED)
-	move_and_slide()
-	
-	if Input.is_action_pressed(\"attack\"):
-		animation_state = AnimationState.Busy
-		$AnimatedSprite2D.play(\"attack_right\", 2)
-		if last_direction == Direction.Left:
-			$AnimatedSprite2D.flip_h = true
-		$AnimatedSprite2D.animation_finished.connect(func():
-			animation_state = AnimationState.Ready
-			$AnimatedSprite2D.flip_h = false
-			handle_animation()
-		)
-	
-	handle_animation()
-
-func handle_animation():
-	if animation_state != AnimationState.Ready:
-		return
-	
-	var animation := \"\"
-	if input_vector == Vector2.ZERO:
-		if last_direction == Direction.Down:
-			animation = \"idle_front\"
-		elif last_direction == Direction.Left:
-			animation = \"idle_left\"
-		elif last_direction == Direction.Right:
-			animation = \"idle_right\"
-		elif last_direction == Direction.Up:
-			animation = \"idle_back\"
-	else:
-		if input_vector.y > 0:
-			animation = \"run_down\" if is_running else \"walk_down\"
-			last_direction = Direction.Down
-		if input_vector.y < 0:
-			animation = \"run_up\" if is_running else \"walk_up\"
-			last_direction = Direction.Up
-		if input_vector.x > 0:
-			animation = \"run_right\" if is_running else \"walk_right\"
-			last_direction = Direction.Right
-		if input_vector.x < 0:
-			animation = \"run_left\" if is_running else \"walk_left\"
-			last_direction = Direction.Left
-	
-	if animation != \"\":
-		$AnimatedSprite2D.play(animation)
-"
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_72ieh"]
 radius = 4.70349
@@ -794,7 +686,7 @@ func _ready() -> void:
 
 [node name="Player" type="CharacterBody2D"]
 y_sort_enabled = true
-script = SubResource("GDScript_8kmhe")
+script = ExtResource("1_rgeog")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 y_sort_enabled = true

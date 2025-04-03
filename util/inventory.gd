@@ -2,19 +2,6 @@ class_name Inventory
 
 const INVENTORY_SIZE := 16
 
-class ItemQuantity:
-	var item: Item
-	var quantity: int
-	
-	func _init(_item: Item, _quantity: int):
-		self.item = _item
-		self.quantity = _quantity
-	
-	func _to_string() -> String:
-		return "ItemQuantity(item: {item}, quantity: {quantity})".format({
-			"item": item,
-			"quantity": quantity
-		})
 
 var item_slots : Array[ItemQuantity] = []
 
@@ -47,7 +34,7 @@ func can_store_item(item: Item) -> bool:
 		return false
 	
 	for slot in item_slots:
-		if slot != null and slot.item.id == item.id and slot.quantity < item.stack_size:
+		if slot != null and slot.item.template.id == item.template.id and slot.quantity < item.stack_size:
 			return true
 			
 	return false
@@ -69,7 +56,7 @@ func store_item_quantity(item: Item, quantity: int) -> void:
 func store_item(item: Item) -> bool:
 	if item.stack_size > 1:
 		for slot in item_slots:
-			if slot != null and slot.item.id == item.id and slot.quantity < item.stack_size:
+			if slot != null and slot.item.template.id == item.template.id and slot.quantity < item.stack_size:
 				slot.quantity += 1
 				changed.emit()
 				return true

@@ -5,7 +5,7 @@ func _ready() -> void:
 
 func _deferred_ready() -> void:
 	# Starter Items
-	equipped_items.equip(EquippedItems.EquippedItemSlot.Head, Consts.ITEM_CLOTH_HELMET)
+	equipped_items.equip(ItemEnums.EquipmentSlot.Head, Consts.ITEM_CLOTH_HELMET.create_instance())
 
 var inventory := Inventory.new()
 var equipped_items := EquippedItems.new()

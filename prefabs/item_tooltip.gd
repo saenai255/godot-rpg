@@ -1,6 +1,6 @@
 extends MarginContainer
 
-func set_item(data: Inventory.ItemQuantity) -> void:
+func set_item(data: ItemQuantity) -> void:
 	if data == null:
 		%Tooltip.visible = false
 		return
@@ -9,7 +9,7 @@ func set_item(data: Inventory.ItemQuantity) -> void:
 	%ItemName.text = prefix + data.item.name
 	%ItemName.label_settings.font_color = get_quality_color(data.item.quality)
 	%Quality.label_settings.font_color = get_quality_color(data.item.quality)
-	%Quality.text = Item.ItemQuality.keys()[data.item.quality]
+	%Quality.text = ItemEnums.Quality.keys()[data.item.quality]
 	%Description.text = data.item.description
 	set_major_stats(data.item)
 	set_minor_stats(data.item)
@@ -30,22 +30,22 @@ func set_weapon_damage(item: Item) -> void:
 	%WeaponDamageContainer.visible = item.damage != null
 	if !%WeaponDamageContainer.visible:
 		return
-	%Damage.text = "    %d to %d damage" % [item.damage.min, item.damage.max]
-	%DamageType.text = "Physical" if item.damage.type == Item.DamageType.Physical else "Magical"
+	%Damage.text = "    %d to %d damage" % [item.damage.dmg_min, item.damage.dmg_max]
+	%DamageType.text = "Physical" if item.damage.type == ItemEnums.DamageType.Physical else "Magical"
 
 func set_weapon_type(item: Item) -> void:
-	%WeaponType.visible = item.weapon_slot != Item.WeaponSlot.None
+	%WeaponType.visible = item.weapon_slot != ItemEnums.WeaponSlot.None
 	if !%WeaponType.visible:
 		return
 	
 	var text := ""
-	if item.weapon_slot == Item.WeaponSlot.OneHand:
+	if item.weapon_slot == ItemEnums.WeaponSlot.OneHand:
 		text = "One Handed"
-	elif item.weapon_slot == Item.WeaponSlot.OffHand:
+	elif item.weapon_slot == ItemEnums.WeaponSlot.OffHand:
 		text = "Off Handed"
-	elif item.weapon_slot == Item.WeaponSlot.MainHand:
+	elif item.weapon_slot == ItemEnums.WeaponSlot.MainHand:
 		text = "Main Handed"
-	elif item.weapon_slot == Item.WeaponSlot.TwoHand:
+	elif item.weapon_slot == ItemEnums.WeaponSlot.TwoHand:
 		text = "Two Handed"
 	else:
 		push_error("unhandled weapon slot: " + str(item.weapon_slot))
@@ -127,18 +127,18 @@ func set_minor_stats(item: Item) -> void:
 	%MinorStats.text = text
 	%MinorStatsContainer.visible = text != ""
 
-func get_quality_color(quality: Item.ItemQuality) -> Color:
-		if quality == Item.ItemQuality.Junk:
+func get_quality_color(quality: ItemEnums.Quality) -> Color:
+		if quality == ItemEnums.Quality.Junk:
 			return Color.DIM_GRAY
-		elif quality == Item.ItemQuality.Common:
+		elif quality == ItemEnums.Quality.Common:
 			return Color.WHITE_SMOKE			
-		elif quality == Item.ItemQuality.Uncommon:
+		elif quality == ItemEnums.Quality.Uncommon:
 			return Color.LIME_GREEN
-		elif quality == Item.ItemQuality.Rare:
+		elif quality == ItemEnums.Quality.Rare:
 			return Color.ROYAL_BLUE
-		elif quality == Item.ItemQuality.Epic:
+		elif quality == ItemEnums.Quality.Epic:
 			return Color.DARK_ORCHID
-		elif quality == Item.ItemQuality.Legendary:
+		elif quality == ItemEnums.Quality.Legendary:
 			return Color.DARK_ORANGE
 		return Color.BLACK
 		

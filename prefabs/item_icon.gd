@@ -4,7 +4,7 @@ class_name ItemIcon
 const TooltipPrefab = preload("res://prefabs/item_tooltip.tscn")
 
 @export var active := false
-var data : Inventory.ItemQuantity = null
+var data : ItemQuantity = null
 @export var canvas: CanvasLayer = null
 
 var tooltip: MarginContainer = null
@@ -15,7 +15,7 @@ func _ready() -> void:
 	mouse_entered.connect(handle_mouse_entered)
 	mouse_exited.connect(handle_mouse_exited)
 
-func update_data(item: Inventory.ItemQuantity) -> void:
+func update_data(item: ItemQuantity) -> void:
 	data = item
 	if data == null:
 		$MarginContainer/ColorRect.visible = true

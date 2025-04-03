@@ -1,6 +1,6 @@
 extends VBoxContainer
 
-const Slot = EquippedItems.EquippedItemSlot
+const Slot = ItemEnums.EquipmentSlot
 
 func _ready() -> void:
 	update_character()
@@ -39,7 +39,7 @@ func update_item_texture(node: ItemIcon, slot: Slot) -> void:
 	if item == null:
 		node.update_data(null)
 	else:
-		node.update_data(Inventory.ItemQuantity.new(item, 1))
+		node.update_data(ItemQuantity.new(item, 1))
 
 func update_character() -> void:
 	update_item_texture(%MainHand, Slot.MainHand)
